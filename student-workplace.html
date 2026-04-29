@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LaunchPath AI — Student Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-main: #16202f;
+      --bg-card: #2c3a52;
+      --bg-card2: #32425a;
+      --bg-shell: #1f2a3d;
+      --border: #3a4b65;
+      --accent-cyan: #22d3ee;
+      --accent-blue: #38bdf8;
+      --accent-purple: #a855f7;
+      --text-main: #f3f4f6;
+      --text-muted: #c2c7d1;
+      --text-sub: #cbd5f5;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: radial-gradient(circle at top, #16202f 0, #16202f 60%, #020617 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .lp-header {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 16px;
+      max-width: 1180px; margin: 0 auto;
+      padding: 24px 20px 0;
+    }
+    .brand-lockup { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 40px; height: 40px; border-radius: 999px; flex-shrink: 0;
+      background: radial-gradient(circle at 30% 0, #22d3ee 0, #0ea5e9 40%, #111827 95%);
+      box-shadow: 0 0 0 2px rgba(56,189,248,.6), 0 14px 30px rgba(15,23,42,.9);
+    }
+    .brand-text-main { font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+    .brand-text-sub { font-size: .82rem; color: var(--text-sub); margin-top: 2px; }
+    .lp-header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .lp-nav-link {
+      padding: 9px 16px; border-radius: 999px;
+      border: 1px solid rgba(56,189,248,.45);
+      background: rgba(15,23,42,.55);
+      color: rgba(224,242,254,.86);
+      text-decoration: none; font-size: .86rem; white-space: nowrap;
+      transition: border-color .15s, background .15s;
+    }
+    .lp-nav-link:hover { border-color: rgba(56,189,248,.75); background: rgba(15,23,42,.75); }
+    .lp-nav-link.active { border-color: rgba(56,189,248,.9); box-shadow: 0 0 0 3px rgba(56,189,248,.1) inset; }
+    .lp-nav-link.signin { border-color: rgba(148,163,184,.45); }
+    @media (max-width: 840px) {
+      .lp-header { flex-direction: column; align-items: flex-start; }
+      .lp-header-right { width: 100%; }
+    }
+
+    /* ── PAGE ── */
+    .page { max-width: 1180px; margin: 0 auto; padding: 28px 20px 0; }
+
+    /* ── WORKSPACE HEADER ── */
+    .workspace-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+    .workspace-title { font-size: 2rem; font-weight: 700; letter-spacing: -.5px; margin-bottom: 4px; }
+    .workspace-greeting { font-size: .95rem; color: var(--text-muted); margin-bottom: 8px; }
+    .workspace-pick { font-size: 1rem; color: rgba(234,242,255,.85); font-weight: 500; }
+    .workspace-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .workspace-actions a {
+      padding: 10px 16px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
+      color: rgba(234,242,255,.86); text-decoration: none;
+      font-size: .86rem; transition: border-color .15s;
+    }
+    .workspace-actions a.primary { border-color: rgba(56,189,248,.55); box-shadow: 0 0 0 3px rgba(56,189,248,.08) inset; }
+    .workspace-actions a:hover { border-color: rgba(56,189,248,.6); }
+
+    /* ── TOOL GRID ── */
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 1100px) { .grid-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 720px) { .grid-cards { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 18px; padding: 18px 16px 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 36px rgba(0,0,0,.6);
+      transition: border-color .2s, transform .2s;
+    }
+    .card:hover { border-color: rgba(56,189,248,.3); transform: translateY(-2px); }
+    .card-icon { font-size: 1.3rem; margin-bottom: 10px; }
+    .card-title { font-size: .95rem; font-weight: 600; margin-bottom: 6px; color: #e5e7eb; }
+    .card-body { font-size: .82rem; color: var(--text-muted); line-height: 1.55; }
+    .open-btn {
+      display: inline-block; margin-top: 14px;
+      padding: 9px 18px; border-radius: 999px;
+      border: 1px solid rgba(56,189,248,.55);
+      background: rgba(0,0,0,.2);
+      color: rgba(234,242,255,.92);
+      text-decoration: none; font-size: .84rem; cursor: pointer;
+      font-family: var(--font);
+      transition: background .15s, border-color .15s;
+    }
+    .open-btn:hover { background: rgba(0,0,0,.3); border-color: rgba(56,189,248,.75); }
+
+    /* ── PROGRESS RINGS ── */
+    .progress-wrap { margin-top: 14px; }
+    .progress-rings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; justify-items: center; }
+    .ringstat {
+      width: 88px; height: 88px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: conic-gradient(#38bdf8 var(--pct), rgba(255,255,255,.1) 0);
+      position: relative; cursor: pointer;
+    }
+    .ringstat::after {
+      content: ""; position: absolute; inset: 10px;
+      background: rgba(31,42,61,.95); border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .ringstat .val {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; width: 70%; line-height: 1.05;
+      z-index: 2; pointer-events: none;
+    }
+    .ringstat .val small { display: block; opacity: .85; font-size: .85em; margin-top: 3px; }
+    .ringstat:hover { filter: brightness(1.07); }
+    .ringstat:focus-within { outline: 2px solid rgba(34,211,238,.65); outline-offset: 4px; }
+    .ringlabel { margin-top: 8px; text-align: center; color: rgba(234,242,255,.7); font-weight: 600; font-size: 13px; line-height: 1.2; }
+    .lp-ring-link { position: absolute; inset: 0; border: 0; background: transparent; cursor: pointer; border-radius: 999px; z-index: 3; }
+    .lp-ring-link:focus { outline: 2px solid rgba(56,189,248,.65); outline-offset: 3px; }
+
+    /* ── CALENDAR TILE ── */
+    .lp-calendar-tile { cursor: pointer; }
+    .lp-calendar-tile:focus { outline: 2px solid rgba(56,189,248,.55); outline-offset: 2px; }
+    .lp-cal-preview {
+      margin-top: 14px; border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(56,189,248,.18);
+      padding: 12px 12px 10px;
+    }
+    .lp-cal-preview-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .lp-cal-preview-month { font-weight: 700; color: rgba(226,232,240,.92); }
+    .lp-cal-preview-chip {
+      font-size: .75rem; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid rgba(56,189,248,.28); background: rgba(56,189,248,.1);
+      color: rgba(224,242,254,.92); font-weight: 700;
+    }
+    .lp-cal-mini-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; color: rgba(226,232,240,.78); font-size: .75rem; }
+    .lp-cal-mini-grid .d { text-align: center; color: rgba(156,163,175,.9); font-weight: 700; }
+    .lp-cal-mini-grid .n { text-align: center; padding: 5px 0; border-radius: 8px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
+    .lp-cal-mini-grid .n.today { background: #fff; color: #1f2a3d; font-weight: 700; border-color: rgba(255,255,255,.65); }
+    .lp-cal-mini-grid .n.mark { background: rgba(56,189,248,.12); border-color: rgba(56,189,248,.22); color: rgba(224,242,254,.95); font-weight: 700; }
+
+    /* ── DEADLINES TILE ── */
+    .lp-deadlines-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; margin-top: 14px; }
+    @media (max-width: 720px) { .lp-deadlines-2col { grid-template-columns: 1fr; } }
+    .lp-deadline-compact {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 10px 12px; border-radius: 12px;
+      border: 1px solid rgba(56,189,248,.16); background: rgba(34,211,238,.06);
+      cursor: pointer; min-height: 52px; transition: border-color .15s;
+    }
+    .lp-deadline-compact:hover { border-color: rgba(56,189,248,.3); }
+    .lp-deadline-compact .b {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: grid; place-items: center; font-weight: 700;
+      background: rgba(56,189,248,.95); color: rgba(15,23,42,.98); flex-shrink: 0;
+    }
+    .lp-deadline-compact .t { font-weight: 600; color: rgba(224,242,254,.92); font-size: .82rem; line-height: 1.2; }
+    .lp-deadline-compact .s { margin-top: 3px; color: rgba(156,163,175,.92); font-size: .76rem; }
+    .lp-deadlines-more { margin-top: 10px; color: rgba(156,163,175,.85); font-size: .82rem; }
+
+    /* ── CALENDAR OVERLAY ── */
+    .lp-cal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.62);
+      display: none; align-items: flex-start; justify-content: center;
+      padding: 18px; z-index: 12000; overflow: auto;
+    }
+    .lp-cal-shell {
+      width: min(1080px, 96vw); margin: 18px auto;
+      border-radius: 22px; border: 1px solid rgba(255,255,255,.1);
+      background: linear-gradient(180deg, rgba(44,58,82,.97), rgba(38,52,74,.97));
+      box-shadow: 0 24px 70px rgba(0,0,0,.7); overflow: hidden;
+    }
+    .lp-cal-head {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px;
+      padding: 16px 18px 12px; border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .lp-cal-head-title { font-size: 1.05rem; font-weight: 700; color: #e5e7eb; }
+    .lp-cal-head-sub { margin-top: 6px; color: rgba(203,213,245,.85); font-size: .86rem; line-height: 1.45; max-width: 680px; }
+    .lp-cal-close {
+      border: 1px solid rgba(148,163,184,.24); background: rgba(22,32,47,.5);
+      color: rgba(226,232,240,.92); padding: 10px 12px; border-radius: 12px;
+      cursor: pointer; font-weight: 600; font-family: var(--font);
+    }
+    .lp-cal-controls {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .lp-cal-nav { display: flex; align-items: center; gap: 10px; }
+    .lp-cal-icon {
+      width: 36px; height: 36px; border-radius: 12px;
+      border: 1px solid rgba(148,163,184,.22); background: rgba(22,32,47,.5);
+      color: rgba(226,232,240,.9); cursor: pointer; font-size: 18px;
+      display: grid; place-items: center; transition: border-color .15s;
+    }
+    .lp-cal-icon:hover { border-color: rgba(56,189,248,.55); }
+    .lp-cal-month { min-width: 170px; font-weight: 700; color: rgba(226,232,240,.95); }
+    .lp-cal-select {
+      height: 36px; border-radius: 12px;
+      border: 1px solid rgba(148,163,184,.22); background: rgba(22,32,47,.5);
+      color: rgba(226,232,240,.92); padding: 0 12px; font-weight: 600;
+      cursor: pointer; font-family: var(--font);
+    }
+    .lp-cal-white { margin: 16px 18px 18px; background: #f7faff; border: 1px solid rgba(230,236,245,.95); border-radius: 18px; overflow: hidden; }
+    .lp-cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); background: #fff; border-bottom: 1px solid #e6ecf5; }
+    .lp-cal-dow div { padding: 10px 12px; font-size: 12px; color: #64748b; font-weight: 700; border-right: 1px solid #e6ecf5; }
+    .lp-cal-dow div:last-child { border-right: none; }
+    .lp-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); min-height: 520px; background: #fff; }
+    .lp-cal-cell { border-right: 1px solid #e6ecf5; border-bottom: 1px solid #e6ecf5; padding: 10px 10px 12px; position: relative; }
+    .lp-cal-cell:nth-child(7n) { border-right: none; }
+    .lp-cal-cell.out { background: #fbfcff; opacity: .72; }
+    .lp-cal-date { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: #0f172a; font-weight: 700; margin-bottom: 8px; }
+    .lp-cal-date .m { font-size: 11px; color: #64748b; font-weight: 700; }
+    .lp-cal-evt { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 12px; background: #ecf5ff; border: 1px solid rgba(56,189,248,.25); cursor: pointer; margin-top: 8px; transition: border-color .15s; }
+    .lp-cal-evt:hover { border-color: rgba(56,189,248,.4); }
+    .lp-cal-ava { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: rgba(56,189,248,.18); color: rgba(30,64,175,.95); font-weight: 700; font-size: 12px; flex-shrink: 0; }
+    .lp-cal-evt .name { font-size: 12px; font-weight: 700; color: #0f172a; line-height: 1.15; }
+    .lp-cal-evt .meta { margin-top: 3px; font-size: 11px; color: #64748b; }
+    .lp-cal-more { margin-top: 8px; font-size: 11px; color: #64748b; font-weight: 700; }
+    .lp-cal-mini-bg { position: fixed; inset: 0; background: rgba(2,6,23,.5); display: none; align-items: center; justify-content: center; padding: 18px; z-index: 13000; }
+    .lp-cal-mini { width: min(520px, 96vw); background: #fff; border-radius: 18px; border: 1px solid #e6ecf5; box-shadow: 0 22px 70px rgba(0,0,0,.55); overflow: hidden; }
+    .lp-cal-mini-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #e6ecf5; }
+    .lp-cal-mini-title { font-weight: 700; color: #0f172a; }
+    .lp-cal-mini-close { border: 1px solid #e6ecf5; background: #fff; border-radius: 12px; padding: 8px 10px; cursor: pointer; font-weight: 700; color: #0f172a; font-family: var(--font); }
+    .lp-cal-mini-body { padding: 14px 16px 16px; color: #0f172a; font-size: 13px; }
+    .lp-cal-kv { display: grid; grid-template-columns: 140px 1fr; gap: 10px; padding: 8px 0; border-bottom: 1px dashed #e6ecf5; }
+    .lp-cal-kv:last-child { border-bottom: none; }
+    .lp-cal-k { color: #64748b; font-weight: 700; }
+
+    /* ── SAVED ITEMS MODAL ── */
+    .lp-modal.hidden { display: none; }
+    .lp-modal { position: fixed; inset: 0; z-index: 9999; }
+    .lp-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); }
+    .lp-modal-card {
+      position: relative; width: min(760px, calc(100% - 28px));
+      margin: 80px auto; border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: linear-gradient(180deg, rgba(44,58,82,.97), rgba(38,52,74,.97));
+      box-shadow: 0 24px 70px rgba(0,0,0,.6); padding: 14px 16px 12px;
+    }
+    .lp-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .lp-modal-header h3 { margin: 0; font-size: 1.05rem; }
+    .lp-x { border: 0; background: transparent; color: #e2e8f0; font-size: 1.1rem; cursor: pointer; padding: 6px 8px; border-radius: 10px; }
+    .lp-x:hover { background: rgba(255,255,255,.06); }
+    .lp-modal-body { max-height: 55vh; overflow: auto; padding-right: 4px; }
+    .lp-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+    .lp-secondary-link { color: var(--text-sub); text-decoration: none; font-size: .9rem; }
+    .lp-secondary-link:hover { color: var(--accent-cyan); }
+    .remove-btn { border: 1px solid rgba(255,255,255,.14); background: rgba(15,23,42,.55); color: #e2e8f0; border-radius: 999px; padding: 7px 10px; font-size: .82rem; cursor: pointer; white-space: nowrap; font-family: var(--font); }
+    .remove-btn:hover { border-color: rgba(34,211,238,.65); }
+    .lp-danger { border: 1px solid rgba(248,113,113,.55); background: rgba(127,29,29,.35); color: #fecaca; border-radius: 999px; padding: 8px 12px; font-size: .86rem; cursor: pointer; font-family: var(--font); }
+    .lp-danger:hover { border-color: rgba(248,113,113,.85); }
+    .empty { color: var(--text-sub); padding: 12px 4px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px 32px; margin-top: 40px;
+    }
+    .footer-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .footer-brand { font-size: .82rem; color: #4b5563; }
+    .footer-brand strong { color: var(--text-muted); }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: .82rem; color: #4b5563; text-decoration: none; transition: color .15s; }
+    .footer-links a:hover { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="lp-header">
+    <div class="brand-lockup">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-text-main">LaunchPath AI</div>
+        <div class="brand-text-sub">Plan Smarter · Apply Better</div>
+      </div>
+    </div>
+    <div class="lp-header-right">
+      <a class="lp-nav-link" href="index.html">Home</a>
+      <a class="lp-nav-link active" href="student-workplace.html">Student Workspace</a>
+      <a class="lp-nav-link signin" href="student-login.html">Sign In</a>
+    </div>
+  </header>
+
+  <div class="page">
+
+    <!-- WORKSPACE HEADER -->
+    <section>
+      <div class="workspace-top">
+        <div>
+          <h1 class="workspace-title">Student Workspace</h1>
+          <div class="workspace-greeting" id="wsGreeting">Welcome back — pick up where you left off.</div>
+          <div class="workspace-pick">Select a module to continue:</div>
+        </div>
+        <!-- STUDENT SUMMARY WIDGET — top right -->
+        <div style="background:linear-gradient(135deg,rgba(34,211,238,.10),rgba(59,130,246,.07));border:1px solid rgba(34,211,238,.28);border-radius:16px;padding:14px 20px;width:520px;max-width:100%;flex-shrink:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+                <span style="font-size:15px;">✦</span>
+                <span style="font-size:.9rem;font-weight:700;color:#f3f4f6;">Student Summary</span>
+              </div>
+              <div style="font-size:.78rem;color:#c2c7d1;line-height:1.5;">Your complete college readiness picture — fit scores, top matches, ROI, progress, and a personalized key insight.</div>
+            </div>
+            <!-- Button locked until 3+ iterations — tooltip on hover -->
+            <div style="flex-shrink:0;">
+              <button onclick="window.location.href='finalwrap.html'" style="padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,#22d3ee,#3b82f6);color:#020617;font-weight:700;font-size:.82rem;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;opacity:1;">View Student Summary →</button>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          // Track iterations per tool in localStorage (placeholder — replace with API in React)
+          // A "session" = meaningful use: saving a college, running a search, writing >50 words in essay, etc.
+          // For demo: read lp_iterations from localStorage; unlock if total >= 9 (3 tools × 3 sessions)
+          // Button always enabled
+
+          function checkSummaryAccess() {
+            window.location.href = 'finalwrap.html';
+          }
+        </script>
+      </div>
+
+      <!-- TOOL CARDS -->
+      <div class="grid-cards">
+
+        <article class="card">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">College Match</div>
+          <div class="card-body">Build a balanced list of Safety, Target, and Reach schools based on your GPA &amp; SAT scores.</div>
+          <a class="open-btn" href="college-match.html">Open →</a>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">✍️</div>
+          <div class="card-title">Essay Studio</div>
+          <div class="card-body">Draft, Smart Review, and Polish your essays — with a draft strength indicator to guide you.</div>
+          <a class="open-btn" href="essay-studio.html">Open →</a>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">📱</div>
+          <div class="card-title">Social Media Studio</div>
+          <div class="card-body">Generate on-brand captions and student branding copy for TikTok, Instagram, and LinkedIn.</div>
+          <a class="open-btn" href="social-studio.html">Open →</a>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Scattergram</div>
+          <div class="card-body">Visualize admission outcomes by GPA and SAT to see where you stand relative to admitted students.</div>
+          <a class="open-btn" href="scattergram.html">Open →</a>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">💰</div>
+          <div class="card-title">ROI Calculator</div>
+          <div class="card-body">Compare two colleges side-by-side on cost, projected earnings, and breakeven time.</div>
+          <a class="open-btn" href="roi-calculator.html">Open →</a>
+        </article>
+
+        <!-- PROGRESS CARD -->
+        <article class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Your Progress</div>
+          <div class="card-body">A quick snapshot of what you have saved and upcoming deadlines.</div>
+          <div class="progress-wrap">
+            <div class="progress-rings">
+              <div style="text-align:center">
+                <div class="ringstat" style="--pct:0%;">
+                  <div class="val"><span class="num">0</span><small>/ 15</small></div>
+                  <button class="lp-ring-link" data-type="essay" aria-label="View saved essays"></button>
+                </div>
+                <div class="ringlabel">Essays</div>
+              </div>
+              <div style="text-align:center">
+                <div class="ringstat" style="--pct:0%;">
+                  <div class="val"><span class="num">0</span><small>/ 15</small></div>
+                  <button class="lp-ring-link" data-type="college" aria-label="View saved colleges"></button>
+                </div>
+                <div class="ringlabel">Colleges</div>
+              </div>
+              <div style="text-align:center">
+                <div class="ringstat" style="--pct:0%;">
+                  <div class="val"><span class="num">0</span><small>posts</small></div>
+                  <button class="lp-ring-link" data-type="social" aria-label="View saved social"></button>
+                </div>
+                <div class="ringlabel">Social</div>
+              </div>
+              <div style="text-align:center">
+                <div class="ringstat" style="--pct:0%;">
+                  <div class="val"><span class="num">0</span><small>next 30d</small></div>
+                  <button class="lp-ring-link" data-type="upcoming" aria-label="View upcoming deadlines"></button>
+                </div>
+                <div class="ringlabel">Deadlines</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- CALENDAR TILE -->
+        <article class="card lp-calendar-tile" id="lpOpenCalendarTile" role="button" tabindex="0" aria-label="Open application calendar">
+          <div class="card-icon">📅</div>
+          <div class="card-title">Calendar</div>
+          <div class="card-body">Track application deadlines and mark them as submitted.</div>
+          <div class="lp-cal-preview">
+            <div class="lp-cal-preview-top">
+              <div class="lp-cal-preview-month" id="lpCalPreviewMonth">April</div>
+            </div>
+            <div class="lp-cal-mini-grid" id="lpCalMiniGrid" aria-hidden="true"></div>
+          </div>
+        </article>
+
+        <!-- DEADLINES TILE -->
+        <article class="card">
+          <div class="card-icon">⏰</div>
+          <div class="card-title">Deadlines</div>
+          <div class="card-body">Your next upcoming deadlines across all saved colleges.</div>
+          <div class="lp-deadlines-2col" id="lpDeadlineTileList"></div>
+          <div class="lp-deadlines-more" id="lpDeadlineTileMore"></div>
+        </article>
+
+      </div>
+    </section>
+
+  </div><!-- end .page -->
+
+<!-- Saved Items Modal -->
+<div id="lpModal" class="lp-modal hidden" aria-hidden="true">
+  <div class="lp-modal-backdrop" data-close="1"></div>
+  <div class="lp-modal-card" role="dialog" aria-modal="true" aria-labelledby="lpModalTitle">
+    <div class="lp-modal-header">
+      <h3 id="lpModalTitle">Saved</h3>
+      <button id="lpModalClose" class="lp-x" aria-label="Close">✕</button>
+    </div>
+    <div id="lpModalBody" class="lp-modal-body"></div>
+    <div class="lp-modal-footer">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <a href="student-workplace.html" class="lp-secondary-link">View full list</a>
+    <button id="lpExportExcel" class="remove-btn" type="button">Export Excel</button>
+    <button id="lpExportWord" class="remove-btn" type="button">Export Word</button>
+  </div>
+  <button id="lpClearType" class="lp-danger" type="button">Clear</button>
+</div>
+  </div>
+</div>
+
+<!-- Calendar Overlay -->
+<div id="lpCalOverlay" class="lp-cal-overlay" aria-hidden="true">
+  <div class="lp-cal-shell" role="dialog" aria-modal="true" aria-label="Application Calendar">
+    <div class="lp-cal-head">
+      <div>
+        <div class="lp-cal-head-title">Application Calendar</div>
+        <div class="lp-cal-head-sub">Deadlines auto-populate from your saved colleges. Keep it simple: track deadlines and mark “Submitted”.</div>
+      </div>
+      <button class="lp-cal-close" id="lpCalClose" type="button" aria-label="Close calendar">Close</button>
+    </div>
+
+    <div class="lp-cal-controls">
+      <div class="lp-cal-nav">
+        <button class="lp-cal-icon" id="lpCalPrev" type="button" aria-label="Previous month">‹</button>
+        <div class="lp-cal-month" id="lpCalMonth">—</div>
+        <button class="lp-cal-icon" id="lpCalNext" type="button" aria-label="Next month">›</button>
+      </div>
+      <div>
+        <select class="lp-cal-select" id="lpCalView" aria-label="Calendar view">
+          <option value="month" selected>Month</option>
+          <option value="week">Week</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="lp-cal-white">
+      <div class="lp-cal-dow">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div class="lp-cal-grid" id="lpCalGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Mini details modal -->
+<div id="lpCalMiniBg" class="lp-cal-mini-bg" aria-hidden="true">
+  <div class="lp-cal-mini">
+    <div class="lp-cal-mini-head">
+      <div class="lp-cal-mini-title" id="lpCalMiniTitle">Deadline</div>
+      <button class="lp-cal-mini-close" id="lpCalMiniClose" type="button" aria-label="Close details">Close</button>
+    </div>
+    <div class="lp-cal-mini-body" id="lpCalMiniBody"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const KEY="lp_saved_items_v1";
+  
+
+  // Demo save (College Match tile): adds one college to Saved Colleges if user has none
+  const demoSaveBtn=document.getElementById("demoSaveCollege");
+  if(demoSaveBtn){
+    demoSaveBtn.addEventListener("click", ()=>{
+      const items=getSaved();
+      const now=new Date();
+      const fmt=(d)=>d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+      const demoItem={type:"college", name:"Northeastern University", deadline:"Jan 1, 2026", savedOn: fmt(now)};
+      // avoid duplicates by name/type
+      const exists=items.some(x=>x.type==="college" && (x.name||"")===demoItem.name);
+      if(!exists){
+        items.push(demoItem);
+        setSaved(items);
+      }
+      // open saved colleges immediately for quick demo feedback
+      openSaved("college");
+    });
+  }
+
+const getSaved=()=>{ try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch(e) { return []; } };
+  const setSaved=(items)=>{ localStorage.setItem(KEY, JSON.stringify(items)); updateRings(); };
+
+  function updateRings(){
+    const items = getSaved();
+    const essays   = items.filter(x=>x.type==="essay").length;
+    const colleges = items.filter(x=>x.type==="college").length;
+    const social   = items.filter(x=>x.type==="social").length;
+    // Deadlines: count saved colleges with a deadline in next 30 days
+    const now = new Date();
+    const in30 = new Date(now.getTime() + 30*24*60*60*1000);
+    const deadlines = items.filter(x=>{
+      if(!x.deadline) return false;
+      const d = new Date(x.deadline);
+      return d >= now && d <= in30;
+    }).length;
+
+    const MAX = 15;
+    const rings = [
+      { idx:0, count:essays,   max:MAX,  suffix:"/ 15"    },
+      { idx:1, count:colleges, max:MAX,  suffix:"/ 15"    },
+      { idx:2, count:social,   max:99,   suffix:"posts"   },
+      { idx:3, count:deadlines,max:10,   suffix:"next 30d"},
+    ];
+
+    const ringEls = document.querySelectorAll(".ringstat");
+    rings.forEach(function(r){
+      const el = ringEls[r.idx];
+      if(!el) return;
+      const pct = r.max > 0 ? Math.min(Math.round((r.count / r.max) * 100), 100) : 0;
+      el.style.setProperty("--pct", pct + "%");
+      const numEl = el.querySelector(".num");
+      if(numEl) numEl.textContent = r.count;
+    });
+  }
+
+  // Run on page load
+  updateRings();
+
+  // Also re-run whenever localStorage changes (e.g. from essay-studio in same tab)
+  window.addEventListener("storage", updateRings);
+  const esc=(s)=>(s??"").toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  function closeModal(){
+    const modal=document.getElementById("lpModal");
+    if(!modal) return;
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden","true");
+  }
+
+  function renderTable(headers, rows){
+    return `
+      <table id="lpSavedTable" style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr>${headers.map(h=>`<th style="text-align:left;padding:8px;color:#cbd5f5;border-bottom:1px solid rgba(255,255,255,.10);">${esc(h)}</th>`).join("")}</tr>
+        </thead>
+        <tbody>
+          ${rows.length ? rows.map((r,i)=>`
+            <tr>
+              <td style="padding:8px;border-bottom:1px solid rgba(255,255,255,.06);">${i+1}</td>
+              ${r.map(c=>`<td style="padding:8px;border-bottom:1px solid rgba(255,255,255,.06);">${esc(c)}</td>`).join("")}
+            </tr>`).join("") : `
+            <tr><td colspan="${headers.length}" style="padding:10px;color:#cbd5f5;">No saved items yet.</td></tr>
+          `}
+        </tbody>
+      </table>`;
+  }
+
+  function openSaved(type){
+    const modal=document.getElementById("lpModal");
+    if(!modal) return;
+
+    const items=getSaved().filter(x=>x.type===type);
+    const titleMap={college:"Saved Colleges", essay:"Saved Essays", social:"Saved Social Posts"};
+    document.getElementById("lpModalTitle").textContent = titleMap[type] || "Saved";
+
+    let headers=["#"], rows=[];
+    if(type==="college"){
+      headers=["#","College Name","Deadline","Saved Date"];
+      const demo=[
+        {name:"Northeastern University", deadline:"Jan 1, 2026", savedOn:"Jan 4, 2026"},
+        {name:"Boston University", deadline:"Jan 4, 2026", savedOn:"Jan 4, 2026"},
+        {name:"University of Michigan", deadline:"Feb 1, 2026", savedOn:"Jan 4, 2026"},
+        {name:"Rutgers University", deadline:"Dec 1, 2025", savedOn:"Jan 4, 2026"},
+        {name:"NYU", deadline:"Jan 5, 2026", savedOn:"Jan 4, 2026"},
+      ];
+      const list=(items.length?items:demo);
+      rows=list.map(i=>[i.name||"—", i.deadline||"—", (i.savedOn||i.savedDate||"—")]);
+    } else if(type==="essay"){
+      headers=["#","University / College","Essay Subject","Saved Date"];
+      const demo=[
+        {college:"Common App", subject:"Personal Statement", savedOn:"Jan 4, 2026"},
+        {college:"Northeastern University", subject:"Why Northeastern?", savedOn:"Jan 4, 2026"},
+        {college:"Boston University", subject:"Community & Impact", savedOn:"Jan 4, 2026"},
+      ];
+      const list=(items.length?items:demo);
+      rows=list.map(i=>[i.college||i.name||"—", i.subject||"—", (i.savedOn||i.savedDate||"—")]);
+    } else if(type==="social"){
+      headers=["#","Platform","Post Type","Saved"];
+      rows=items.map(i=>[i.platform||"—", i.postType||"—", i.savedOn||"—"]);
+    }
+
+    document.getElementById("lpModalBody").innerHTML = renderTable(headers, rows);
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden","false");
+
+    // Clear
+    const clearBtn=document.getElementById("lpClearType");
+    if(clearBtn) clearBtn.onclick=()=>{
+      setSaved(getSaved().filter(x=>x.type!==type));
+      openSaved(type);
+    };
+
+    // Exports
+    const exX=document.getElementById("lpExportExcel");
+    const exW=document.getElementById("lpExportWord");
+    if(exX) exX.onclick=()=>exportCSV(type);
+    if(exW) exW.onclick=()=>exportWord(type);
+  }
+
+  function exportCSV(type){
+    const table=document.getElementById("lpSavedTable");
+    if(!table) return;
+    const lines=[...table.querySelectorAll("tr")].map(tr=>
+      [...tr.children].map(td=>`"${(td.textContent||"").replace(/"/g,'""').trim()}"`).join(",")
+    ).join("\n");
+    const blob=new Blob([lines],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`LaunchPathAI_${type}_saved.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  function exportWord(type){
+    const title=document.getElementById("lpModalTitle")?.textContent||"Saved";
+    const table=document.getElementById("lpSavedTable")?.outerHTML||"";
+    const doc=`<html><head><meta charset="utf-8"><title>${esc(title)}</title></head><body><h2>${esc(title)}</h2>${table}
+  <!-- ═══════════════════════════════════════════════
+       CONTENT PROTECTION — no screenshot / copy / print
+  ═══════════════════════════════════════════════════ -->
+  <style id="lp-protect">
+    html, body, * { -webkit-user-select:none!important; -moz-user-select:none!important; user-select:none!important; }
+    img { -webkit-user-drag:none; pointer-events:none; }
+    @media print { body { display:none!important; visibility:hidden!important; } }
+  </style>
+  <script id="lp-protect-js">
+  (function(){
+    document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
+    document.addEventListener('keydown',function(e){
+      var k=e.key?e.key.toLowerCase():'';
+      var c=e.ctrlKey||e.metaKey;
+      if(c&&['s','p','a','c','u'].includes(k)){e.preventDefault();return false;}
+      if(k==='printscreen'){e.preventDefault();return false;}
+      if(k==='f12'){e.preventDefault();return false;}
+      if(c&&e.shiftKey&&['i','j','c'].includes(k)){e.preventDefault();return false;}
+    });
+    document.addEventListener('dragstart',function(e){e.preventDefault();return false;});
+    var ps=document.createElement('style');
+    ps.textContent='@media print{body{display:none!important;}}';
+    document.head.appendChild(ps);
+    var shield=document.createElement('div');
+    shield.id='lp-shield';
+    shield.style.cssText='display:none;position:fixed;inset:0;z-index:99998;background:#020617;align-items:center;justify-content:center;flex-direction:column;gap:10px;';
+    shield.innerHTML='<div style="width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 30% 20%,#22d3ee,#0ea5e9 35%,#2d1b69 70%,#020617);box-shadow:0 0 40px rgba(34,211,238,.3);"></div><div style="font-family:system-ui;font-size:14px;color:#22d3ee;font-weight:700;letter-spacing:.12em;text-transform:uppercase;">LaunchPath AI</div><div style="font-family:system-ui;font-size:12px;color:rgba(255,255,255,.35);">Protected Content</div>';
+    document.body.appendChild(shield);
+    document.addEventListener('visibilitychange',function(){
+      if(document.hidden){shield.style.display='flex';}
+      else{setTimeout(function(){shield.style.display='none';},200);}
+    });
+  })();
+  </script>
+
+</body></html>`;
+    const blob=new Blob([doc],{type:"application/msword"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`LaunchPathAI_${type}_saved.doc`;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  function bindRings(){
+    const map={colleges:"college", essays:"essay", social:"social"};
+    document.querySelectorAll(".ringlabel").forEach(lbl=>{
+      const type=map[(lbl.textContent||"").trim().toLowerCase()];
+      if(!type) return;
+      const wrap=lbl.parentElement;
+      const ring=wrap ? wrap.querySelector(".ringstat") : null;
+      if(!ring) return;
+
+      // add a full overlay button if missing
+      let btn = ring.querySelector(".lp-ring-link");
+      if(!btn){
+        btn=document.createElement("button");
+        btn.type="button";
+        btn.className="lp-ring-link";
+        ring.appendChild(btn);
+      }
+      btn.setAttribute("aria-label","Open saved " + type);
+      btn.onclick=(e)=>{ e.preventDefault(); openSaved(type); };
+      ring.style.cursor="pointer";
+    });
+  }
+
+  function bindModalClose(){
+    document.addEventListener("click",(e)=>{
+      if(e.target?.id==="lpModalClose" || e.target?.dataset?.close==="1"){ closeModal(); }
+    });
+    document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeModal(); });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded", ()=>{ bindRings(); bindModalClose(); });
+  } else {
+    bindRings(); bindModalClose();
+  }
+})();
+</script>
+
+<script>
+(() => {
+  const SAVED_KEY = "lp_saved_items_v1";
+
+  const $ = (id) => document.getElementById(id);
+
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const setPreviewMonth = () => {
+    const el = $("lpCalPreviewMonth");
+    if(!el) return;
+    const now = new Date();
+    el.textContent = months[now.getMonth()];
+  };
+  const pad2 = (n) => String(n).padStart(2,"0");
+  const ymd = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  const parseYmd = (s) => {
+    const parts = (s||"").split("-").map(Number);
+    if(parts.length !== 3 || !parts[0]) return null;
+    return new Date(parts[0], (parts[1]||1)-1, parts[2]||1);
+  };
+  const fmtShort = (s) => {
+    const d = parseYmd(s);
+    if(!d) return "—";
+    return `${months[d.getMonth()].slice(0,3)} ${d.getDate()}`;
+  };
+  const esc = (s) => (s??"").toString()
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+
+  const getSaved = () => { try { return JSON.parse(localStorage.getItem(SAVED_KEY) || "[]"); } catch(e) { return []; } };
+
+  function sampleDeadlines(){
+    // keep these safely in the future relative to "now"
+    const now = new Date();
+    const y = now.getFullYear() + (now.getMonth() >= 9 ? 1 : 0); // if late year, push to next year
+    return [
+      { college:"NYU", deadline:`${y}-02-15`, type:"Regular Decision", status:"Not started" },
+      { college:"Rutgers", deadline:`${y}-03-01`, type:"Regular Decision", status:"In progress" },
+      { college:"Penn State", deadline:`${y}-02-01`, type:"Rolling (Priority)", status:"Not started" },
+      { college:"UConn", deadline:`${y}-02-15`, type:"Regular Decision", status:"Submitted" },
+      { college:"Boston University", deadline:`${y}-01-04`, type:"Regular Decision", status:"Not started" }
+    ];
+  }
+
+  function loadDeadlines(){
+    const saved = getSaved().filter(x => (x?.type||"") === "college");
+    const mapped = saved
+      .map(x => ({
+        college: x.name || x.college || "College",
+        deadline: x.deadline || x.date || "",
+        type: x.appType || x.typeLabel || "Deadline",
+        status: x.status || "Not started"
+      }))
+      .filter(x => !!parseYmd(x.deadline));
+
+    return mapped.length ? mapped : sampleDeadlines();
+  }
+
+  let deadlines = loadDeadlines();
+
+  function upcomingSorted(){
+    const today = ymd(new Date());
+    return deadlines
+      .filter(x => x.deadline >= today)
+      .sort((a,b) => a.deadline.localeCompare(b.deadline));
+  }
+
+  function renderUpcoming(){
+    const list = $("lpDeadlineTileList");
+    const more = $("lpDeadlineTileMore");
+    if(!list || !more) return;
+
+    const upcoming = upcomingSorted();
+    const show = upcoming.slice(0,6);
+
+    list.innerHTML = "";
+    show.forEach(item => {
+      const badge = (item.college || "C").trim().slice(0,1).toUpperCase();
+      const div = document.createElement("div");
+      div.className = "lp-deadline-compact";
+      div.innerHTML = `
+        <div class="b">${esc(badge)}</div>
+        <div>
+          <div class="t">${esc(item.college)} — ${esc(fmtShort(item.deadline))}</div>
+          <div class="s">${esc(item.type)} • ${esc(item.status)}</div>
+        </div>
+      `;
+      div.addEventListener("click", () => openMini(item));
+      list.appendChild(div);
+    });
+
+    const extra = Math.max(0, upcoming.length - show.length);
+    more.textContent = extra ? `+${extra} more deadlines` : "";
+  }
+
+  // Mini calendar preview (tile)
+  function renderMiniCalPreview(baseDate){
+  const monthEl = $("lpCalPreviewMonth");
+  const gridEl = $("lpCalMiniGrid");
+  if(!monthEl || !gridEl) return;
+
+  const d0 = baseDate ? new Date(baseDate) : new Date();
+  const y = d0.getFullYear();
+  const m = d0.getMonth();
+  monthEl.textContent = months[m];
+
+  // Today highlight (only if preview is the current month)
+  const now = new Date();
+  const todayNum = (now.getFullYear() === y && now.getMonth() === m) ? now.getDate() : null;
+
+  // Deadline day markers (optional)
+  const deadlineDays = new Set();
+  deadlines.forEach(item => {
+    if(!item.deadline) return;
+    const dt = parseYmd(item.deadline);
+    if(dt && dt.getFullYear() === y && dt.getMonth() === m){
+      deadlineDays.add(dt.getDate());
+    }
+  });
+
+  const first = new Date(y, m, 1);
+  const startDow = first.getDay(); // 0=Sun
+  const daysIn = new Date(y, m + 1, 0).getDate();
+
+  const parts = [];
+  const dow = ["S","M","T","W","T","F","S"];
+  dow.forEach(ch => parts.push(`<div class="d">${ch}</div>`));
+
+  // Leading blanks to align the 1st under the correct weekday
+  for(let i=0;i<startDow;i++){
+    parts.push(`<div class="n">&nbsp;</div>`);
+  }
+
+  // Actual month days ONLY (no trailing blanks after the last day)
+  for(let day=1; day<=daysIn; day++){
+    const isDeadline = deadlineDays.has(day);
+    const isToday = (todayNum === day);
+    const cls = `n${isDeadline ? " mark" : ""}${isToday ? " today" : ""}`;
+    parts.push(`<div class="${cls}">${day}</div>`);
+  }
+
+  gridEl.innerHTML = parts.join("");
+}
+
+// Calendar overlay
+  const overlay = $("lpCalOverlay");
+  const openTile = $("lpOpenCalendarTile");
+  const closeBtn = $("lpCalClose");
+  const grid = $("lpCalGrid");
+  const monthLabel = $("lpCalMonth");
+  const prev = $("lpCalPrev");
+  const next = $("lpCalNext");
+  const view = $("lpCalView");
+
+  // Mini modal
+  const miniBg = $("lpCalMiniBg");
+  const miniClose = $("lpCalMiniClose");
+  const miniTitle = $("lpCalMiniTitle");
+  const miniBody = $("lpCalMiniBody");
+
+  function openOverlay(){
+    if(!overlay) return;
+    overlay.style.display = "flex";
+    overlay.setAttribute("aria-hidden","false");
+    if(view) view.value = "month";
+    renderMonth();
+  }
+  function closeOverlay(){
+    if(!overlay) return;
+    overlay.style.display = "none";
+    overlay.setAttribute("aria-hidden","true");
+  }
+
+  function openMini(item){
+    if(!miniBg || !miniTitle || !miniBody) return;
+    const d = parseYmd(item.deadline);
+    miniTitle.textContent = `${item.college} — Deadline`;
+    miniBody.innerHTML = `
+      <div class="lp-cal-kv"><div class="lp-cal-k">College</div><div><strong>${esc(item.college)}</strong></div></div>
+      <div class="lp-cal-kv"><div class="lp-cal-k">Deadline</div><div>${d ? `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}` : "—"}</div></div>
+      <div class="lp-cal-kv"><div class="lp-cal-k">Application Type</div><div>${esc(item.type)}</div></div>
+      <div class="lp-cal-kv"><div class="lp-cal-k">Status</div><div>${esc(item.status)}</div></div>
+      <div class="lp-cal-kv"><div class="lp-cal-k">Suggested Next Step</div><div>Open Essay Studio → draft your main personal statement.</div></div>
+    `;
+    miniBg.style.display = "flex";
+    miniBg.setAttribute("aria-hidden","false");
+  }
+  function closeMini(){
+    if(!miniBg) return;
+    miniBg.style.display = "none";
+    miniBg.setAttribute("aria-hidden","true");
+  }
+
+  if(miniClose) miniClose.addEventListener("click", closeMini);
+  if(miniBg) miniBg.addEventListener("click", (e) => { if(e.target === miniBg) closeMini(); });
+
+  let current = new Date();
+  current = new Date(current.getFullYear(), current.getMonth(), 1);
+
+  function indexByDate(){
+    const map = new Map();
+    deadlines.forEach(x => {
+      if(!map.has(x.deadline)) map.set(x.deadline, []);
+      map.get(x.deadline).push(x);
+    });
+    return map;
+  }
+
+  function renderMonth(){
+    if(!grid || !monthLabel) return;
+    monthLabel.textContent = `${months[current.getMonth()]} ${current.getFullYear()}`;
+    grid.innerHTML = "";
+
+    const y = current.getFullYear();
+    const m = current.getMonth();
+    const first = new Date(y,m,1);
+    const start = first.getDay();
+    const daysIn = new Date(y,m+1,0).getDate();
+    const prevDays = new Date(y,m,0).getDate();
+    const totalCells = 42;
+
+    const map = indexByDate();
+
+    for(let i=0;i<totalCells;i++){
+      const cell = document.createElement("div");
+      cell.className = "lp-cal-cell";
+      const dayIndex = i - start + 1;
+
+      let dateObj;
+      let out = false;
+
+      if(dayIndex <= 0){
+        out = true;
+        dateObj = new Date(y,m-1, prevDays + dayIndex);
+      }else if(dayIndex > daysIn){
+        out = true;
+        dateObj = new Date(y,m+1, dayIndex - daysIn);
+      }else{
+        dateObj = new Date(y,m, dayIndex);
+      }
+
+      if(out) cell.classList.add("out");
+
+      const key = ymd(dateObj);
+      const labelMonth = out ? months[dateObj.getMonth()].slice(0,3) : "";
+      cell.innerHTML = `<div class="lp-cal-date"><span>${dateObj.getDate()}</span>${out ? `<span class="m">${labelMonth}</span>` : ""}</div>`;
+
+      const evts = map.get(key) || [];
+      evts.slice(0,3).forEach(evt => {
+        const e = document.createElement("div");
+        e.className = "lp-cal-evt";
+        const initial = (evt.college || "C").trim()[0].toUpperCase();
+        e.innerHTML = `
+          <div class="lp-cal-ava">${esc(initial)}</div>
+          <div>
+            <div class="name">${esc(evt.college)}</div>
+            <div class="meta">${esc(evt.type)} • ${esc(evt.status)}</div>
+          </div>
+        `;
+        e.addEventListener("click", (ev) => { ev.stopPropagation(); openMini(evt); });
+        cell.appendChild(e);
+      });
+
+      if(evts.length > 3){
+        const more = document.createElement("div");
+        more.className = "lp-cal-more";
+        more.textContent = `+${evts.length - 3} more`;
+        cell.appendChild(more);
+      }
+
+      grid.appendChild(cell);
+    }
+  }
+
+  function renderWeekStub(){
+    if(!grid || !monthLabel) return;
+    monthLabel.textContent = `${months[current.getMonth()]} ${current.getFullYear()} • Week view (Phase 2)`;
+    grid.innerHTML = "";
+    const stub = document.createElement("div");
+    stub.style.gridColumn = "1 / -1";
+    stub.style.padding = "18px";
+    stub.innerHTML = `
+      <div style="font-weight:800; color:#0F172A; margin-bottom:6px;">Week view is optional.</div>
+      <div style="color:#64748B; font-size:13px; line-height:1.45;">
+        For MVP, month view is the cleanest. If students ask for it, we can add week view later without changing the data model.
+      </div>
+    `;
+    grid.appendChild(stub);
+  }
+
+  function rerender(){
+    if(!view || view.value === "month") renderMonth();
+    else renderWeekStub();
+  }
+if(openTile) {
+    openTile.addEventListener("click", openOverlay);
+    openTile.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openOverlay(); }
+    });
+  }
+  if(closeBtn) closeBtn.addEventListener("click", closeOverlay);
+  if(overlay) overlay.addEventListener("click", (e) => { if(e.target === overlay) closeOverlay(); });
+
+  if(prev) prev.addEventListener("click", () => { current = new Date(current.getFullYear(), current.getMonth()-1, 1); rerender(); });
+  if(next) next.addEventListener("click", () => { current = new Date(current.getFullYear(), current.getMonth()+1, 1); rerender(); });
+  if(view) view.addEventListener("change", rerender);
+
+  // Update deadlines if storage changes
+  window.addEventListener("storage", (e) => {
+    if(e.key === SAVED_KEY){
+      deadlines = loadDeadlines();
+      renderUpcoming();
+      renderMiniCalPreview(new Date());
+      rerender();
+    }
+  });
+
+  // Initial render
+  setPreviewMonth();
+  renderMiniCalPreview(new Date());
+  renderUpcoming();
+})();
+</script>
+</body>
+</html>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <strong>LaunchPath AI</strong> &copy; 2026. All rights reserved.
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="mailto:hello@launchpathai.com">Contact Us</a>
+        <a href="student-login.html">Sign In</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Pull student name from profile if available
+    (function() {
+      try {
+        var user = JSON.parse(localStorage.getItem('lp_student_user') || 'null');
+        if (user && user.firstName) {
+          var el = document.getElementById('wsGreeting');
+          if (el) el.textContent = 'Welcome back, ' + user.firstName + ' — pick up where you left off.';
+        }
+      } catch(e) {}
+    })();
+    // Active nav
+    (function() {
+      var p = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      document.querySelectorAll('.lp-header-right a').forEach(function(a) {
+        var href = (a.getAttribute('href') || '').toLowerCase();
+        if (href === p) a.classList.add('active');
+      });
+    })();
+  </script>
+
+</body>
+</html>
