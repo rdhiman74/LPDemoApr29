@@ -1,0 +1,5169 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>LaunchPath AI — Essay Studio</title>
+<style>
+    html{font-size:14px;}
+    :root {
+    --bg-body: #16202f;
+    --bg-shell: #1f2a3d;
+    --bg-card: #2c3a52;
+    --bg-subcard: #32425a;
+    --border-subtle: #3a4b65;
+    --accent: #22d3ee;
+    --accent2: rgba(34, 211, 238, 0.16);
+    --text-main: #f3f4f6;
+    --text-muted: #c2c7d1;
+    --muted: rgba(243,244,246,.72);
+    --muted2: rgba(243,244,246,.55);
+    --text: #f3f4f6;
+  }
+    *{box-sizing:border-box}
+    body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top, #16202f 0, #0b1120 60%, #020617 100%);
+    color: #f3f4f6;
+    min-height: 100vh;
+  }
+    .wrap{max-width: 1280px; margin: 0 auto; padding: 22px 24px 0;}
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 10px 2px 16px 2px;
+    }
+    .brand{font-weight:600; font-size:30px; letter-spacing:-0.02em;}
+    .subhead{margin-top:6px; color:var(--muted); font-size:14px;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items:start;
+      margin-top: 12px;
+    }
+    .card{
+      background: #2c3a52;
+      border: 1px solid #3a4b65;
+      border-radius: 20px;
+      box-shadow: 0 16px 44px rgba(0,0,0,0.6);
+      padding: 18px;
+      position:relative;
+    }
+
+    .h{font-size:16.5px; font-weight:600; margin:0 0 7px 0;}
+    .p{color:var(--muted); margin:0 0 12px 0; line-height:1.55; font-size:12px;}
+    .steps{margin-top: 10px; display:grid; gap: 14px;}
+    .step{
+      display:grid; grid-template-columns: 22px 1fr; gap: 10px;
+      align-items:start;
+    }
+    .num{
+      width: 22px; height: 22px; border-radius: 9px;
+      border: 1px solid var(--accent2);
+      color: var(--accent);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:600; font-size: 12px;
+      margin-top: 2px;
+    }
+    .step b{display:block; margin-bottom: 3px;}
+    .step span{color: var(--muted2); line-height: 1.5;}
+    .rightTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+    .titleBlock{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .titleBlock .h{margin:0}
+    .meta{color:var(--muted2); font-size:12px;}
+    .meta b{color: var(--text);}
+    .toolbar{
+      display:flex; gap: 10px; flex-wrap:nowrap; align-items:center; justify-content:flex-end;
+      overflow-x:auto; padding-bottom: 2px;
+      scrollbar-width: thin;
+    
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      background: linear-gradient(180deg, #2c3a52 70%, rgba(44,58,82,.7));
+      padding-top: 6px;
+    }
+    .toolbar::-webkit-scrollbar{height:8px;}
+    .toolbar::-webkit-scrollbar-thumb{background: rgba(255,255,255,.12); border-radius:999px;}
+    .toolbar::-webkit-scrollbar-track{background: rgba(0,0,0,.12); border-radius:999px;}
+    .btn{
+      border-radius: 999px;
+      border: 1px solid var(--stroke2);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 7px 9px;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .08s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.08);}
+    .btn.primary{
+      background: linear-gradient(135deg, #22d3ee, #3b82f6);
+      border-color: rgba(34,211,238,.6);
+      color: #020617;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(34,211,238,.2);
+    }
+    
+    .btn.small{padding:10px 14px;font-size:14px;border-radius:14px;line-height:1;}
+
+    .issueBar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+    .issueBtn{
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px 14px 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(12,22,32,.62);
+      color: rgba(255,255,255,.92);
+      font-weight: 900;
+      
+      font-size: 12.5px;
+letter-spacing: .2px;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+      user-select: none;
+      overflow: hidden;
+    }
+    .issueBtn::before{
+      content:"";
+      position:absolute;
+      left:-2px;
+      top:-22%;
+      width: 14px;
+      height: 144%;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, rgba(var(--accent-rgb),0), rgba(var(--accent-rgb),.95), rgba(var(--accent-rgb),0));
+      opacity: .95;
+      filter: drop-shadow(0 0 10px rgba(var(--accent-rgb),.35));
+      pointer-events:none;
+    }
+    .issueBtn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--accent-rgb), .55);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 2px rgba(var(--accent-rgb), .18) inset;
+    }
+    .issueBtn.active{
+      border-color: rgba(var(--accent-rgb), .75);
+      box-shadow: 0 12px 34px rgba(0,0,0,.38), 0 0 0 2px rgba(var(--accent-rgb), .22) inset;
+      background: rgba(12,22,32,.72);
+    }
+    .issueBtn:active{ transform: translateY(0px) scale(.99); }
+    .issueBtn .count{
+      font-weight: 900;
+      opacity: .95;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(var(--accent-rgb), .45);
+      background: rgba(var(--accent-rgb), .12);
+    }
+    .issueBtn.k-all{ --accent-rgb: 34,211,238; }
+    .issueBtn.k-warn{ --accent-rgb: 255,107,107; }
+    .issueBtn.k-amber{ --accent-rgb: 255,184,64; }
+    .issueBtn.k-minor{ --accent-rgb: 124,124,255; }
+    .issueBtn.k-all::before{ opacity:.8; }
+
+    .btn.ghost{
+      background: rgba(0,0,0,.15);
+    }
+    .link{
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      cursor:pointer;
+      font-weight: 800;
+    }
+    .tipRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      margin: 14px 0 12px 0;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+    .editor{border-radius:16px; border:1px solid #3a4b65; background:#111827; padding:12px; height:380px; position:relative; overflow:hidden;}
+    textarea{
+      width:100%;
+      height: 100%;
+      resize:none;
+      border:none;
+      outline:none;
+      background: transparent;
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.6;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    /* Ensure draftView (highlighted preview) aligns exactly with textarea */
+    #draftView{
+      position:absolute;
+      inset:12px; /* matches .editor padding */
+      overflow:auto;
+    }
+    #draft{
+      position:absolute;
+      inset:12px;
+      overflow:auto;
+    }
+    .bottomRow{display:grid; grid-template-columns: 1fr 360px; gap: 10px;
+      margin-top: 14px;
+    }
+    .mini{background:#32425a; border:1px solid #3a4b65; border-radius:22px; padding:12px; min-height:110px;}
+    .mini h4{margin:0 0 6px 0; font-size: 16px; font-weight:600;}
+    .mini p{margin:0; color: var(--muted); line-height: 1.5;}
+    .scoreBox{
+      display:flex; flex-direction:column; gap: 10px;
+    }
+    .scoreTop{
+      display:flex; align-items:baseline; justify-content:space-between; gap: 10px;
+      margin-bottom: 2px;
+    }
+    .scoreTop .label{
+      letter-spacing:.18em; font-weight:600; font-size: 14px; opacity:.9;
+    }
+    .scoreTop .val{
+      font-size: 16px; font-weight:600;
+    }
+    .pillRow{color: var(--muted); font-size: 14px;}
+    .bar{
+      height: 10px; border-radius: 999px;
+      background: #111827;
+      overflow:hidden;
+      border: 1px solid #3a4b65;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(34,211,238,1), rgba(34,211,238,.35));
+    }
+    .goal{color: var(--muted); font-size: 14px; line-height: 1.4;}
+    .goal b{color: var(--accent);}
+    .hidden{display:none !important;}
+    .toast{
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      background: rgba(20,30,44,.94);
+      border: 1px solid rgba(96,220,255,.35);
+      color: #e8fbff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+      z-index: 99999;
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      font-size: 14px;
+      max-width: 360px;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast.error{color: #fca5a5;}
+    .toast.ok{color: #86efac;}
+    .toast.warn{color: #fde68a;}
+    .bottomRow{grid-template-columns: 1fr; }
+      .editor{height: 420px;}
+    }
+  
+    .howStrip{
+      background: #2c3a52;
+      border: 1px solid #3a4b65;
+      border-radius: 20px;
+      box-shadow: 0 16px 44px rgba(0,0,0,0.6);
+      padding: 14px 16px;
+      position:relative;
+      overflow:hidden;
+      margin-bottom: 14px;
+    }
+
+    .howTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .howTitle{
+      font-weight: 900;
+      font-size: 16.5px;
+    }
+    .howSub{
+      color: var(--muted2);
+      font-size: 12px;
+    }
+    .howRow{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .howStep{
+      border: 1px solid #3a4b65;
+      background: #32425a;
+      border-radius: 14px;
+      padding: 10px 12px;
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      min-height: 64px;
+    }
+    .howBadge{
+      width: 24px; height: 24px;
+      border-radius: 10px;
+      border: 1px solid var(--accent2);
+      color: var(--accent);
+      display:flex; align-items:center; justify-content:center;
+      font-weight: 900;
+      font-size: 12px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+    .howStep b{
+      display:block;
+      font-size: 12.5px;
+      margin-bottom: 2px;
+    }
+    .howStep span{
+      color: var(--muted2);
+      font-size: 11.5px;
+      line-height: 1.35;
+    }
+    @media (max-width: 980px){
+      .howRow{grid-template-columns: 1fr;}
+    }
+
+    .cols{
+      display:grid;
+      grid-template-columns: 1.35fr .85fr;
+      gap: 14px;
+      align-items:start;
+    }
+    }
+    .coachCard .hRow{
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .coachCard .hRow .h{
+      font-weight: 900;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+    .coachCard .hRow .sub{
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .scorePill{
+      border: 1px solid #3a4b65;
+      color: #f3f4f6;
+      background: #111827;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-weight: 700;
+      min-width: 88px;
+      text-align:center;
+      font-size: 1.1rem;
+    }
+    .miniBar{
+      height: 10px;
+      border-radius: 999px;
+      background: #111827;
+      border: 1px solid #3a4b65;
+      overflow:hidden;
+      margin: 8px 0 2px;
+    }
+    .miniBar > div{
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+    .coachBlocks{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .coachBlock{
+      border: 1px solid var(--stroke);
+      background: #32425a;
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .coachBlock .t{
+      font-weight: 900;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .coachBlock .body{
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+
+/* --- Layout fix: force two-column editor + coaching panel side-by-side --- */
+.grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+.cols{
+  display: grid;
+  grid-template-columns: minmax(560px, 1.6fr) minmax(360px, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+/* keep both columns even on smaller screens; allow horizontal scroll instead of stacking */
+html, body{
+  min-width: 1024px;
+}
+
+/* ===== LP Step 1 Highlights + Issue Map (demo wiring) ===== */
+.draftView{
+  width:100%;
+  height:100%;
+  overflow:auto;
+  padding:0; /* align exactly with textarea inside .editor */
+  border-radius:0;
+  border:none;
+  background:transparent;
+  color:rgba(255,255,255,.92);
+  font-size: 12.5px;
+  line-height: 1.6;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  white-space:pre-wrap;
+}
+
+mark[data-issue]{
+  /* sentence-only highlight (no wrap-around artifacts) */
+  position:relative;
+  display:inline;
+  padding:1px 4px;
+  margin:0 1px;
+  border-radius:10px;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+  white-space:normal;
+}
+
+/* Severity colors aligned to pills */
+mark[data-issue].sev-warn{
+  background:rgba(255,107,107,.18);
+  border:1px solid rgba(255,107,107,.30);
+  box-shadow:0 0 0 1px rgba(255,107,107,.10);
+}
+mark[data-issue].sev-amber{
+  background:rgba(255,184,64,.16);
+  border:1px solid rgba(255,184,64,.28);
+  box-shadow:0 0 0 1px rgba(255,184,64,.10);
+}
+mark[data-issue].sev-minor{
+  background:rgba(124,124,255,.14);
+  border:1px solid rgba(124,124,255,.24);
+  box-shadow:0 0 0 1px rgba(124,124,255,.10);
+}
+
+mark[data-issue].w{ background:rgba(250,204,21,.20); border-color:rgba(250,204,21,.32);} /* highlight */
+mark[data-issue].c{ background:rgba(250,204,21,.16); border-color:rgba(250,204,21,.22); }
+mark[data-issue].p{ background:rgba(52,211,153,.14); border-color:rgba(52,211,153,.20); }
+mark[data-issue].r{ background:rgba(251,113,133,.14); border-color:rgba(251,113,133,.20); }
+
+.rewriteTip{
+  position:fixed;
+  left:0;
+  top:0;
+  width:300px;
+  max-width:calc(100vw - 32px);
+  z-index:9999;
+  background:#0f172a;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  padding:10px;
+  color:#fff;
+  font-size:12px;
+  display:none;
+  box-shadow:0 20px 40px rgba(0,0,0,.45);
+  max-height:240px;
+  overflow:auto;
+}
+.rewriteTip::-webkit-scrollbar{ width:10px; }
+.rewriteTip::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.12); border-radius:10px; }
+
+mark[data-issue].tip-open .rewriteTip{ display:block; }
+.tipTitle{ font-weight:900; letter-spacing:.06em; text-transform:uppercase; font-size:11px; color:#38bdf8; margin-bottom:6px; }
+.tipBody{ line-height:1.35; margin-bottom:8px; color:rgba(255,255,255,.92); }
+.copyBtn{
+  background:rgba(56,189,248,.14);
+  border:1px solid rgba(56,189,248,.40);
+  color:#e0f2fe;
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:850;
+  cursor:pointer;
+}
+.copyBtn:hover{ background:rgba(56,189,248,.22); }
+
+.issueList{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+.issueItem{
+  border:1px solid #3a4b65;
+  background:#32425a;
+  border-radius:14px;
+  padding:10px;
+}
+.issueHead{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+.issueTag{ font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:#38bdf8; }
+.issueLoc{ font-size:11px; color:rgba(255,255,255,.62); font-weight:750; margin-top:2px; }
+.issueWhy{ margin-top:6px; color:rgba(255,255,255,.82); font-size:12px; line-height:1.35; font-weight:650; }
+.issueRewrite{
+  margin-top:8px;
+  border:1px solid rgba(56,189,248,.30);
+  background:rgba(56,189,248,.10);
+  border-radius:12px;
+  padding:8px;
+  font-size:12px;
+  color:rgba(255,255,255,.92);
+  line-height:1.35;
+}
+.issueActions{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.miniBtn{
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.18);
+  color:rgba(255,255,255,.92);
+  font-size:11px;
+  font-weight:850;
+  padding:5px 10px;
+  cursor:pointer;
+}
+.miniBtn.primary{ border-color:rgba(56,189,248,.45); background:rgba(56,189,248,.14); }
+.miniBtn:hover{ background:rgba(255,255,255,.08); }
+.miniBtn.primary:hover{ background:rgba(56,189,248,.22); }
+
+
+/* --- Patch v3: improve highlight readability + smaller hover popover --- */
+mark[data-issue]{
+  position: relative;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+mark[data-issue]::selection{ background: rgba(255,255,255,.18); }
+mark[data-issue].hl-yellow,
+mark[data-issue].hl-warn{
+  background: rgba(245, 208, 66, .28) !important;
+  box-shadow: inset 0 -2px 0 rgba(245, 208, 66, .55);
+}
+mark[data-issue].hl-green,
+mark[data-issue].hl-good{
+  background: rgba(45, 212, 191, .18) !important;
+  box-shadow: inset 0 -2px 0 rgba(45, 212, 191, .35);
+}
+mark[data-issue].hl-red,
+mark[data-issue].hl-risk{
+  background: rgba(244, 63, 94, .16) !important;
+  box-shadow: inset 0 -2px 0 rgba(244, 63, 94, .32);
+}
+
+/* Hover rewrite popover */
+mark[data-issue] .rewriteTip{
+  width: min(320px, calc(100vw - 24px)) !important;
+  max-height: min(260px, calc(100vh - 24px)) !important;
+  overflow: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) translateY(10px) !important;
+  top: 100% !important;
+  bottom: auto !important;
+}
+mark[data-issue]:hover .rewriteTip,
+mark[data-issue]:focus-within .rewriteTip{
+  display: block !important;
+}
+.rewriteTip{
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  background: #1f2a3d;
+  border: 1px solid #3a4b65;
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  backdrop-filter: blur(14px);
+}
+.rewriteTip .tipTitle{
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(34,211,238,.95);
+  margin: 0 0 10px 0;
+}
+.rewriteTip .tipBody{
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(255,255,255,.92);
+  margin: 0 0 12px 0;
+  white-space: normal;
+}
+.rewriteTip .copyBtn{
+  font-size: 13px;
+  padding: 9px 12px;
+  border-radius: 999px;
+}
+@media (max-width: 820px){
+  mark[data-issue] .rewriteTip{
+    left: 12px !important;
+    transform: translateY(10px) !important;
+  }
+}
+
+
+/* ===== Step 2: Before/After modal ===== */
+.baModal{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center; justify-content:center;
+  padding:18px;
+  z-index:9999;
+}
+.baModal.show{ display:flex; }
+.baCard{
+  width:min(1000px, 96vw);
+  max-height:88vh;
+  overflow:auto;
+  background:rgba(10,18,34,.96);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:18px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+  padding:14px;
+}
+.baTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.baTop > div{flex:1;min-width:0;}
+.baTitle{font-weight:900;color:rgba(255,255,255,.92);letter-spacing:.06em;text-transform:uppercase;font-size:12px}
+.baGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.baLabel{font-size:11px;font-weight:850;color:rgba(255,255,255,.70);margin:2px 0 6px}
+.baBox{
+  border:1px solid #3a4b65;
+  background:#111827;
+  border-radius:14px;
+  padding:10px;
+  color:rgba(255,255,255,.90);
+  white-space:pre-wrap;
+  line-height:1.5;
+  font-size:13px;
+}
+.baActions{display:flex;justify-content:flex-end;margin-top:10px}
+@media (max-width:820px){ .baGrid{grid-template-columns:1fr} }
+
+
+.pulse{ outline:2px solid rgba(0, 210, 255, .8); box-shadow:0 0 0 6px rgba(0,210,255,.15); border-radius:6px; }
+
+
+/* Issue Map rendering (Phase 1B) */
+.issueItem{border:1px solid rgba(255,255,255,.10); border-radius:16px; padding:12px 12px; background:rgba(255,255,255,.03); cursor:pointer;}
+.issueItem:hover{border-color: rgba(0,224,255,.35); background:rgba(0,224,255,.06);}
+.pill{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:800; letter-spacing:.02em; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.05);}
+.pillR{border-color: rgba(255,84,84,.35); color:#ffb3b3; background:rgba(255,84,84,.10);}
+.pillA{border-color: rgba(255,199,0,.35); color:#ffe1a1; background:rgba(255,199,0,.10);}
+.pillW{border-color: rgba(138,214,255,.35); color:#bfeaff; background:rgba(138,214,255,.10);}
+.ghost.active{outline: 1px solid rgba(0,224,255,.45); background: rgba(0,224,255,.10);}
+mark.flash{animation: lpFlash .8s ease-in-out;}
+@keyframes lpFlash{0%{box-shadow:0 0 0 0 rgba(0,224,255,.0);} 35%{box-shadow:0 0 0 6px rgba(0,224,255,.25);} 100%{box-shadow:0 0 0 0 rgba(0,224,255,.0);}}
+
+/* ===== Coach Engine v1 (offline demo) ===== */
+.coachItem{
+  border:1px solid #3a4b65;
+  background:#32425a;
+  border-radius:14px;
+  padding:10px;
+}
+.coachItem .k{font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:rgba(34,211,238,.95)}
+.coachItem .t{font-weight:850;margin-top:4px}
+.coachItem .d{color:rgba(255,255,255,.72);font-size:12px;line-height:1.45;margin-top:6px}
+.suggCard{
+  border:1px solid #3a4b65;
+  background:#111827;
+  border-radius:14px;
+  padding:10px;
+}
+.suggCard .meta{color:rgba(255,255,255,.62);font-size:11.5px;margin-bottom:6px}
+.suggCard .before{color:rgba(255,255,255,.86);font-size:12.5px;line-height:1.45}
+.suggCard .after{margin-top:8px;border:1px solid rgba(34,211,238,.28);background:rgba(34,211,238,.10);border-radius:12px;padding:8px;color:rgba(255,255,255,.92);font-size:12.5px;line-height:1.45}
+.suggCard .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+
+/* ===== Coach Tabs (no-scroll UX) ===== */
+.coachTabs{
+  display:flex;
+  gap:6px;
+  flex-wrap:nowrap;           /* keep in ONE line */
+  overflow:hidden;
+  padding:10px 0 10px 0;
+}
+.coachTab{
+  white-space:nowrap;
+  border:1px solid #3a4b65;
+  background:#111827;
+  color:#f3f4f6;
+  border-radius:12px;
+  padding:8px 12px;
+  font-weight:600;
+  font-size:.82rem;
+  cursor:pointer;
+  transition:border-color .15s;
+}
+.coachTab.active{
+  border-color: #22d3ee;
+  background: rgba(34,211,238,.18);
+  color: #cffafe;
+}
+
+
+/* ===== Coach Issue Pills: pill look + colored accents ===== */
+.issuePills .pill{ position:relative; }
+.issuePills .pill::before{
+  content:"";
+  position:absolute;
+  left:-1px; top:-1px;
+  width:10px; height:calc(100% + 2px);
+  border-radius:999px;
+  opacity:.9;
+  background: rgba(34,211,238,.55);
+}
+.issuePills .pill[data-filter="warn"]::before{ background: rgba(255,107,107,.65); }
+.issuePills .pill[data-filter="amber"]::before{ background: rgba(255,184,64,.70); }
+.issuePills .pill[data-filter="minor"]::before{ background: rgba(124,124,255,.70); }
+.issuePills .pill span{ font-weight:900; }
+/* ===== Issue Pills (show after Step 1) ===== */
+.issuePills{
+  display:flex;
+  gap:8px;
+  flex-wrap:nowrap;
+  overflow:hidden;
+  padding:0 0 12px 0;
+}
+.issuePills.hidden{ display:none; }
+.issuePills .pill{
+  border:1px solid #3a4b65;
+  background:#111827;
+  color:rgba(255,255,255,.88);
+  border-radius:999px;
+  padding:7px 10px;
+  font-weight:800;
+  font-size:11px;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.issuePills .pill.active{
+  border-color: rgba(34,211,238,.55);
+  background: rgba(34,211,238,.14);
+}
+
+
+
+
+
+/* ===== Issue Map Filter Pills: compact pill style, aligned higher ===== */
+.issueControls{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:-6px;            /* move UP closer to title */
+}
+.issueBtns{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+.issueBtn{
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  padding:5px 10px !important;
+  border-radius:999px !important;
+  font-size:11px !important;
+  font-weight:800 !important;
+  letter-spacing:0 !important;
+  color:rgba(255,255,255,.9) !important;
+  text-decoration:none !important;
+  box-shadow:none !important;
+}
+.issueBtn:hover{
+  border-color: rgba(34,211,238,.45) !important;
+  color: rgba(34,211,238,.95) !important;
+}
+.issueBtn.active{
+  background: rgba(34,211,238,.18) !important;
+  border-color: rgba(34,211,238,.6) !important;
+  color: rgba(34,211,238,.98) !important;
+}
+.issueHint{
+  font-size:11px !important;
+  color: rgba(255,255,255,.60) !important;
+}
+
+
+/* ===== Issue Map Filter Pills: restore pill look + position ===== */
+.issueList .muted{ color: rgba(255,255,255,.62); }
+.issueList > div:first-child{ margin-top:-6px; } /* lift the controls a bit */
+.issueList .issueBtn{
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  padding:5px 10px !important;
+  border-radius:999px !important;
+  font-size:11px !important;
+  font-weight:800 !important;
+  letter-spacing:0 !important;
+  color:rgba(255,255,255,.9) !important;
+  text-decoration:none !important;
+  box-shadow:none !important;
+}
+.issueList .issueBtn:hover{
+  border-color: rgba(34,211,238,.45) !important;
+  color: rgba(34,211,238,.95) !important;
+}
+.issueList .issueBtn.active{
+  background: rgba(34,211,238,.18) !important;
+  border-color: rgba(34,211,238,.6) !important;
+  color: rgba(34,211,238,.98) !important;
+}
+
+
+/* ===== Step 2 Diff Highlight ===== */
+.diffAdd{
+  background: rgba(34,211,238,.18);
+  border: 1px solid rgba(34,211,238,.35);
+  border-radius: 10px;
+  padding: 2px 6px;
+}
+
+
+/* ===== Step 2 popup: preserve paragraph spacing ===== */
+#baBefore, #baAfter{ white-space: pre-wrap; }
+
+
+/* ===== Step 2 popup: show paragraph breaks ===== */
+#baBefore, #baAfter{ white-space: pre-wrap; }
+
+
+/* ===== Severity override (ensures Warning shows red even if other classes exist) ===== */
+mark[data-issue].sev-warn{ background:rgba(255,107,107,.18) !important; border:1px solid rgba(255,107,107,.30) !important; }
+mark[data-issue].sev-amber{ background:rgba(255,184,64,.16) !important; border:1px solid rgba(255,184,64,.28) !important; }
+mark[data-issue].sev-minor{ background:rgba(124,124,255,.14) !important; border:1px solid rgba(124,124,255,.24) !important; }
+
+
+    /* Replace button success state */
+    .btnReplace.replaced{
+      border-color: rgba(120,255,220,.55) !important;
+      box-shadow: 0 0 0 2px rgba(120,255,220,.12) inset;
+      background: rgba(20,40,36,.55) !important;
+      color: #e9fff7 !important;
+    }
+    .btnReplace .chk{
+      display:inline-block;
+      margin-left:8px;
+      font-weight:800;
+      color: #7dffd4;
+    }
+    
+
+    .baSummary{
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(96,220,255,.18);
+      background: rgba(12,18,28,.55);
+      border-radius: 14px;
+      font-size: 13px;
+      color: rgba(232,251,255,.92);
+      line-height: 1.35;
+  width: 100%;
+  box-sizing: border-box;
+}
+    .baSummary b{ color: #e8fbff; }
+    .baSummary .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+    .baSummary .chip{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(96,220,255,.18);
+      background: rgba(20,30,44,.55);
+      font-weight: 650;
+    }
+    .baText{
+      white-space: pre-wrap;
+    }
+
+
+/* Submission Ready pill (appears only when criteria pass) */
+.submissionReady{
+  display:inline-flex;
+  align-items:center;
+  margin-left:12px;
+  padding:8px 14px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:13px;
+  letter-spacing:.2px;
+  border:1px solid rgba(120,255,220,.55);
+  background: rgba(16,40,34,.55);
+  color: rgba(235,255,248,.98);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+}
+.submissionReady.hidden{ display:none !important; }
+
+
+/* Inline sample essays panel */
+.samplesPanel{ margin: 12px 0 14px; border: 1px solid #3a4b65; background: #1f2a3d; border-radius: 16px; padding: 12px; }
+.samplesPanel.hidden{ display:none !important; }
+.samplesPanelHeader{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.08); }
+.samplesPanelTitle{ font-weight: 850; letter-spacing:.2px; }
+.samplesPanelActions{ display:flex; gap:10px; }
+.samplesPanelBody{ display:grid; grid-template-columns: 320px 1fr; gap: 12px; padding-top: 12px; }
+.samplesTiles{ display:grid; grid-template-columns: 1fr; gap: 10px; max-height: 320px; overflow:auto; padding-right: 6px; }
+.sampleTile{ border: 1px solid #3a4b65; background: #32425a; border-radius: 14px; padding: 10px 10px; cursor:pointer; }
+.sampleTile:hover{ background: rgba(255,255,255,.07); }
+.sampleTile.active{ border-color: rgba(120,255,220,.45); background: rgba(16,40,34,.45); }
+.sampleTileTitle{ font-weight: 800; margin-bottom: 3px; }
+.sampleTileSub{ font-size: 12px; opacity:.82; line-height:1.35; }
+.samplesPreview{ border: 1px solid #3a4b65; background: #32425a; border-radius: 14px; padding: 10px; overflow:hidden; display:flex; flex-direction:column; }
+.samplesPreviewTitle{ font-weight: 850; margin-bottom: 2px; }
+.samplesPreviewMeta{ font-size: 12px; opacity:.80; margin-bottom: 10px; }
+.samplesPreviewText{ overflow:auto; white-space: pre-wrap; line-height: 1.5; padding-right: 6px; }
+@media (max-width: 860px){
+  .samplesPanelBody{ grid-template-columns: 1fr; }
+  .samplesTiles{ max-height: 200px; }
+}
+
+
+/* === LP tweak: inline polish metrics (Clarity : Tone : Readability) === */
+.polish-metrics{list-style:none;margin:10px 0 0 0;padding:0;display:flex;flex-wrap:wrap;gap:14px}
+.polish-metrics li{margin:0;padding:0;white-space:nowrap}
+.polish-metrics li:before{content:"• ";opacity:.85}
+.polish-metrics .is-hidden{display:none!important}
+
+
+/* === LP tweak: polish summary metrics single-line === */
+.metrics-line{margin-top:10px;line-height:1.6}
+.metrics-line .sep{opacity:.6;margin:0 10px}
+
+/* ===== LP Essay Review Popup Demo ===== */
+.lpModalOverlay{
+  position:fixed; inset:0; background:rgba(2,6,23,.72);
+  backdrop-filter: blur(10px);
+  display:none; align-items:center; justify-content:center;
+  padding:20px; z-index:9999;
+}
+.lpModalOverlay.show{display:flex}
+.lpModal{
+  width:min(1120px, 96vw); max-height:90vh; overflow:auto;
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(900px 500px at top left, rgba(34,211,238,.12), transparent 45%),
+    linear-gradient(180deg, rgba(14,22,36,.98), rgba(6,12,24,.98));
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  padding:16px;
+}
+.lpModalHead{
+  display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap;
+  padding:4px 2px 14px 2px; border-bottom:1px solid rgba(255,255,255,.08);
+}
+.lpModalKicker{font-size:11px; text-transform:uppercase; letter-spacing:.14em; color:rgba(243,244,246,.58)}
+.lpModalTitle{font-size:24px; font-weight:700; letter-spacing:-.02em; margin-top:4px}
+.lpModalSub{font-size:12.5px; color:rgba(243,244,246,.66); margin-top:5px; max-width:760px; line-height:1.5}
+.lpModalBtns{display:flex; gap:8px; flex-wrap:wrap}
+.lpCloseBtn{
+  border-radius:999px; border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05); color:#fff; padding:9px 12px; font-weight:700; cursor:pointer;
+}
+.lpModalTabs{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 12px 0}
+.lpTab{
+  border-radius:999px; border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04); color:#fff; padding:8px 12px; font-weight:700; cursor:pointer; font-size:12px;
+}
+.lpTab.active{background:rgba(34,211,238,.18); border-color:rgba(34,211,238,.45); color:#cffafe}
+.lpView{display:none}
+.lpView.active{display:block}
+.lpMetricGrid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:12px}
+.lpMetric{
+  border-radius:16px; padding:14px;
+  background:#111827;
+  border:1px solid #3a4b65;
+}
+.lpMetricLabel{font-size:12px; color:rgba(243,244,246,.65); margin-bottom:4px}
+.lpMetricValue{font-size:28px; font-weight:800}
+.lpMetricMeta{font-size:11px; color:rgba(243,244,246,.58); margin-top:6px}
+.lpTwoCol{display:grid; grid-template-columns:1.15fr .85fr; gap:12px}
+.lpPanel{
+  border-radius:18px; padding:14px;
+  background:#1f2a3d;
+  border:1px solid #3a4b65;
+}
+.lpPanelTitle{font-size:15px; font-weight:700; margin-bottom:4px}
+.lpPanelSub{font-size:12px; color:rgba(243,244,246,.62); margin-bottom:10px; line-height:1.45}
+.lpList{display:flex; flex-direction:column; gap:8px}
+.lpItem{
+  border-radius:14px; border:1px solid #3a4b65;
+  background:#111827; padding:10px 12px;
+}
+.lpItemTitle{font-size:13px; font-weight:700}
+.lpItemSub{font-size:12px; color:rgba(243,244,246,.65); margin-top:4px; line-height:1.45}
+.lpPill{
+  display:inline-flex; align-items:center; gap:7px;
+  border-radius:999px; padding:5px 10px; border:1px solid; font-size:11px; font-weight:800;
+}
+.lpPill .dot{width:8px; height:8px; border-radius:999px}
+.lpGreen{color:#bbf7d0; background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.34)}
+.lpAmber{color:#fde68a; background:rgba(250,204,21,.12); border-color:rgba(250,204,21,.34)}
+.lpRed{color:#fecaca; background:rgba(248,113,113,.12); border-color:rgba(248,113,113,.34)}
+.lpBench{
+  display:grid; grid-template-columns:110px 1fr 64px 86px; gap:10px; align-items:center;
+  padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06); font-size:12px;
+}
+.lpBar{height:10px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.04)}
+.lpBar span{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#22d3ee,#0ea5e9)}
+.lpDiffWrap{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.lpTextCol{
+  border-radius:16px; border:1px solid #3a4b65; background:#111827;
+  padding:12px; min-height:340px;
+}
+.lpTextHead{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px}
+.lpTextTitle{font-size:13px; font-weight:800}
+.lpTextBody{font-size:13px; line-height:1.7; color:rgba(243,244,246,.92); white-space:pre-wrap}
+.lpHiA{background:rgba(248,113,113,.16); border-bottom:1px solid rgba(248,113,113,.45)}
+.lpHiB{background:rgba(34,211,238,.12); border-bottom:1px solid rgba(34,211,238,.45)}
+.lpSmallGrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:10px 0 12px}
+@media (max-width: 900px){
+  .lpMetricGrid,.lpSmallGrid,.lpTwoCol,.lpDiffWrap{grid-template-columns:1fr}
+}
+
+</style>
+<style>
+/* Injected to match College Match header exactly */
+/* ===== LaunchPath unified header (scoped) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{
+  font-size:.86rem;
+  color:#cbd5f5;
+}
+.lp-nav{display:flex;align-items:center;gap:12px;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{
+  border-color:rgba(168,85,247,.75);
+}
+.lp-action:hover{filter:brightness(1.05);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+
+/* ===== LaunchPath unified header (2 buttons) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{font-size:.86rem;color:#cbd5f5;}
+.lp-nav{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{border-color:rgba(168,85,247,.75);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+/* ===== End header ===== */
+
+
+/* Patch: keep Issue Map filter buttons on ONE line (scroll if needed) */
+#issueList > div:first-child{
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+}
+#issueList > div:first-child::-webkit-scrollbar{height:8px;}
+#issueList > div:first-child::-webkit-scrollbar-thumb{background: rgba(255,255,255,.12); border-radius:999px;}
+#issueList > div:first-child::-webkit-scrollbar-track{background: rgba(0,0,0,.12); border-radius:999px;}
+
+
+/* ===== LP Essay Review Popup Demo ===== */
+.lpModalOverlay{
+  position:fixed; inset:0; background:rgba(2,6,23,.72);
+  backdrop-filter: blur(10px);
+  display:none; align-items:center; justify-content:center;
+  padding:20px; z-index:9999;
+}
+.lpModalOverlay.show{display:flex}
+.lpModal{
+  width:min(1120px, 96vw); max-height:90vh; overflow:auto;
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(900px 500px at top left, rgba(34,211,238,.12), transparent 45%),
+    linear-gradient(180deg, rgba(14,22,36,.98), rgba(6,12,24,.98));
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  padding:16px;
+}
+.lpModalHead{
+  display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap;
+  padding:4px 2px 14px 2px; border-bottom:1px solid rgba(255,255,255,.08);
+}
+.lpModalKicker{font-size:11px; text-transform:uppercase; letter-spacing:.14em; color:rgba(243,244,246,.58)}
+.lpModalTitle{font-size:24px; font-weight:700; letter-spacing:-.02em; margin-top:4px}
+.lpModalSub{font-size:12.5px; color:rgba(243,244,246,.66); margin-top:5px; max-width:760px; line-height:1.5}
+.lpModalBtns{display:flex; gap:8px; flex-wrap:wrap}
+.lpCloseBtn{
+  border-radius:999px; border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05); color:#fff; padding:9px 12px; font-weight:700; cursor:pointer;
+}
+.lpModalTabs{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 12px 0}
+.lpTab{
+  border-radius:999px; border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04); color:#fff; padding:8px 12px; font-weight:700; cursor:pointer; font-size:12px;
+}
+.lpTab.active{background:rgba(34,211,238,.18); border-color:rgba(34,211,238,.45); color:#cffafe}
+.lpView{display:none}
+.lpView.active{display:block}
+.lpMetricGrid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:12px}
+.lpMetric{
+  border-radius:16px; padding:14px;
+  background:#111827;
+  border:1px solid #3a4b65;
+}
+.lpMetricLabel{font-size:12px; color:rgba(243,244,246,.65); margin-bottom:4px}
+.lpMetricValue{font-size:28px; font-weight:800}
+.lpMetricMeta{font-size:11px; color:rgba(243,244,246,.58); margin-top:6px}
+.lpTwoCol{display:grid; grid-template-columns:1.15fr .85fr; gap:12px}
+.lpPanel{
+  border-radius:18px; padding:14px;
+  background:#1f2a3d;
+  border:1px solid #3a4b65;
+}
+.lpPanelTitle{font-size:15px; font-weight:700; margin-bottom:4px}
+.lpPanelSub{font-size:12px; color:rgba(243,244,246,.62); margin-bottom:10px; line-height:1.45}
+.lpList{display:flex; flex-direction:column; gap:8px}
+.lpItem{
+  border-radius:14px; border:1px solid #3a4b65;
+  background:#111827; padding:10px 12px;
+}
+.lpItemTitle{font-size:13px; font-weight:700}
+.lpItemSub{font-size:12px; color:rgba(243,244,246,.65); margin-top:4px; line-height:1.45}
+.lpPill{
+  display:inline-flex; align-items:center; gap:7px;
+  border-radius:999px; padding:5px 10px; border:1px solid; font-size:11px; font-weight:800;
+}
+.lpPill .dot{width:8px; height:8px; border-radius:999px}
+.lpGreen{color:#bbf7d0; background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.34)}
+.lpAmber{color:#fde68a; background:rgba(250,204,21,.12); border-color:rgba(250,204,21,.34)}
+.lpRed{color:#fecaca; background:rgba(248,113,113,.12); border-color:rgba(248,113,113,.34)}
+.lpBench{
+  display:grid; grid-template-columns:110px 1fr 64px 86px; gap:10px; align-items:center;
+  padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06); font-size:12px;
+}
+.lpBar{height:10px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.04)}
+.lpBar span{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#22d3ee,#0ea5e9)}
+.lpDiffWrap{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.lpTextCol{
+  border-radius:16px; border:1px solid #3a4b65; background:#111827;
+  padding:12px; min-height:340px;
+}
+.lpTextHead{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px}
+.lpTextTitle{font-size:13px; font-weight:800}
+.lpTextBody{font-size:13px; line-height:1.7; color:rgba(243,244,246,.92); white-space:pre-wrap}
+.lpHiA{background:rgba(248,113,113,.16); border-bottom:1px solid rgba(248,113,113,.45)}
+.lpHiB{background:rgba(34,211,238,.12); border-bottom:1px solid rgba(34,211,238,.45)}
+.lpSmallGrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:10px 0 12px}
+@media (max-width: 900px){
+  .lpMetricGrid,.lpSmallGrid,.lpTwoCol,.lpDiffWrap{grid-template-columns:1fr}
+}
+
+</style>
+<style id="lp-step1-size-patch">
+.lpModal .lpMetricGrid{gap:8px !important; margin-bottom:10px !important;}
+.lpModal .lpMetric{
+  padding:9px 10px !important;
+  border-radius:18px !important;
+}
+.lpModal .lpMetricLabel{
+  font-size:11px !important;
+  margin-bottom:3px !important;
+}
+.lpModal .lpMetricValue{
+  font-size:20px !important;
+  line-height:1.05 !important;
+}
+.lpModal .lpMetricMeta{
+  font-size:10.5px !important;
+  margin-top:4px !important;
+}
+</style>
+<style id="lp-lock-polish">
+.lpLockedBtn{
+  opacity:1 !important;
+  cursor:pointer !important;
+  pointer-events:auto !important;
+}
+</style>
+<style id="lp-hide-student-sees">
+/* Hide only the "What the student sees" block */
+.lpPanelTitle + .lpSmallGrid,
+.lpPanelTitle + .lpSmallGrid + .lpPanelSub { display: none !important; }
+</style>
+<style id="lp-hide-coach-questions">
+/* Hide Coach questions panel */
+.lpPanelTitle:contains("Coach questions") { display:none; }
+</style>
+<style id="lp-overlay-opaque-fix">
+.lpModalOverlay{
+  background: rgba(2,6,23,0.97) !important;
+  backdrop-filter: none !important;
+}
+</style>
+<style id="lp-eval-scale-info-patch">
+.lpMetricValueWrap{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.lpInfoBtn{
+  width:22px;
+  height:22px;
+  min-width:22px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);
+  color:rgba(243,244,246,.92);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:800;
+  line-height:1;
+  cursor:pointer;
+}
+.lpInfoBtn:hover{
+  border-color:rgba(34,211,238,.55);
+  background:rgba(34,211,238,.14);
+  color:#cffafe;
+}
+.evalScaleModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(2,6,23,.78);
+  z-index:10001;
+}
+.evalScaleModal.show{display:flex;}
+.evalScaleCard{
+  width:min(1180px,96vw);
+  max-height:88vh;
+  overflow:auto;
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(900px 500px at top left, rgba(34,211,238,.12), transparent 45%),
+    linear-gradient(180deg, rgba(14,22,36,.98), rgba(6,12,24,.98));
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  padding:18px;
+}
+.evalScaleHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
+.evalScaleTitle{
+  font-size:15px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+.evalScaleSub{
+  font-size:12px;
+  color:rgba(243,244,246,.66);
+  line-height:1.45;
+}
+.evalScaleGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.evalScaleGrid .lpItem{
+  min-height:110px;
+}
+@media (max-width: 900px){
+  .evalScaleGrid{grid-template-columns:1fr;}
+}
+</style>
+<style id="lp-step2-hard-block-style">
+#lpStep2Blocker{
+  position:fixed;
+  z-index:10050;
+  border-radius:999px;
+  cursor:not-allowed;
+  background:transparent;
+}
+#btnStep2.lpBlocked{
+  opacity:.88 !important;
+}
+#btnStep2.lpUnlocked{
+  opacity:1 !important;
+  pointer-events:auto !important;
+  cursor:pointer !important;
+}
+</style>
+<style id="lp-step2-hover-tooltip-style">
+#lpStep2HoverTip{
+  position:fixed;
+  z-index:10070;
+  max-width:340px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);
+  background:linear-gradient(180deg, rgba(15,23,42,.98), rgba(2,6,23,.98));
+  color:#f8fafc;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  box-shadow:0 18px 44px rgba(0,0,0,.42);
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity .14s ease, transform .14s ease;
+}
+#lpStep2HoverTip.show{
+  opacity:1;
+  transform:translateY(0);
+}
+</style>
+<style>
+  .lp-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding-bottom: 18px; margin-bottom: 20px;
+    border-bottom: 1px solid #3a4b65;
+  }
+  .brand-lockup { display: flex; align-items: center; gap: 12px; }
+  .brand-mark {
+    width: 40px; height: 40px; border-radius: 999px; flex-shrink: 0;
+    background: radial-gradient(circle at 30% 0, #22d3ee 0, #0ea5e9 40%, #111827 95%);
+    box-shadow: 0 0 0 2px rgba(56,189,248,.6), 0 14px 30px rgba(15,23,42,.9);
+  }
+  .brand-text-main { font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+  .brand-text-sub { font-size: .82rem; color: #cbd5f5; margin-top: 2px; }
+  .lp-nav { display: flex; align-items: center; gap: 10px; }
+  .lp-nav-link {
+    padding: 9px 16px; border-radius: 999px;
+    border: 1px solid rgba(56,189,248,.45);
+    background: rgba(15,23,42,.55);
+    color: rgba(224,242,254,.86);
+    text-decoration: none; font-size: .86rem; white-space: nowrap;
+    transition: border-color .15s, background .15s;
+  }
+  .lp-nav-link:hover { border-color: rgba(56,189,248,.75); background: rgba(15,23,42,.75); }
+
+/* Step 2 hover tooltip */
+.step2tip {
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;
+  transform:translateX(-50%);
+  background:#1f2a3d;
+  border:1px solid #3a4b65;
+  color:#c2c7d1;
+  font-size:.75rem;
+  font-weight:600;
+  padding:6px 12px;
+  border-radius:8px;
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .15s;
+  z-index:50;
+}
+.step2wrap:hover .step2tip { opacity:1; }
+/* Word count floating bottom-right of editor */
+.wordCountFloat {
+  position:absolute;
+  bottom:10px;
+  right:14px;
+  font-size:.78rem;
+  color:var(--muted2);
+  background:rgba(31,42,61,.85);
+  padding:3px 8px;
+  border-radius:6px;
+  pointer-events:none;
+  z-index:5;
+}
+</style>
+<style id="lp-polish-redesign-merged">
+/* ===== Merged Polish Redesign ===== */
+.lpView[data-lp-view="polish"]{
+  margin-top: 2px;
+}
+.lpView[data-lp-view="polish"] .lpHeroShell{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:14px;
+  margin-bottom:8px;
+}
+.lpView[data-lp-view="polish"] .lpHeroBox,
+.lpView[data-lp-view="polish"] .lpScoreHero{
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(10,18,28,.72), rgba(18,30,47,.94));
+  padding:10px 12px;
+  min-height:80px;
+}
+.lpView[data-lp-view="polish"] .lpHeroKicker{
+  font-size:.72rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(243,244,246,.58);
+  font-weight:800;
+  margin-bottom:10px;
+}
+.lpView[data-lp-view="polish"] .lpHeroTitle{
+  margin:0;
+  font-size:1.2rem;
+  line-height:1.05;
+  letter-spacing:-.04em;
+  font-weight:900;
+}
+.lpView[data-lp-view="polish"] .lpHeroSub{
+  margin:10px 0 0;
+  color:rgba(243,244,246,.72);
+  font-size:.88rem;
+  line-height:1.5;
+}
+.lpView[data-lp-view="polish"] .lpScoreLabel{
+  font-size:.74rem;
+  text-transform:uppercase;
+  letter-spacing:.15em;
+  color:rgba(243,244,246,.58);
+  font-weight:800;
+}
+.lpView[data-lp-view="polish"] .lpScoreRow{
+  display:flex; align-items:flex-end; gap:14px; line-height:1; margin-top:10px;
+}
+.lpView[data-lp-view="polish"] .lpScoreBefore{
+  font-size:1.8rem; letter-spacing:-.05em; color:#aab9cb; font-weight:900;
+}
+.lpView[data-lp-view="polish"] .lpScoreArrow{
+  font-size:1.5rem; color:#22d3ee; font-weight:900; padding-bottom:6px;
+}
+.lpView[data-lp-view="polish"] .lpScoreAfter{
+  font-size:2.6rem; letter-spacing:-.06em; color:#ffffff; font-weight:950;
+  text-shadow:0 0 24px rgba(34,211,238,.14);
+}
+.lpView[data-lp-view="polish"] .lpInlineDelta{
+  margin-left:12px; font-size:.95rem; color:#9fffdc; font-weight:800;
+}
+.lpView[data-lp-view="polish"] .lpScoreChips{
+  display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;
+}
+.lpView[data-lp-view="polish"] .lpScoreChip{
+  border-radius:999px;
+  padding:7px 11px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);
+  color:#deebf7;
+  font-size:.76rem;
+  font-weight:800;
+}
+.lpView[data-lp-view="polish"] .lpMetricGrid{
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:8px;
+}
+.lpView[data-lp-view="polish"] .lpMetric{
+  border-radius:18px;
+  padding:10px 12px;
+  min-height:92px;
+}
+.lpView[data-lp-view="polish"] .lpMetricLabel{
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-weight:800;
+}
+.lpView[data-lp-view="polish"] .lpMetricValue{
+  font-size:1.28rem;
+  line-height:1.1;
+  letter-spacing:-.03em;
+  font-weight:900;
+}
+.lpView[data-lp-view="polish"] .lpMetricMeta{
+  margin-top:6px;
+  font-size:.8rem;
+  line-height:1.4;
+  color:#bfd0e3;
+}
+.lpView[data-lp-view="polish"] .lpDiffWrap{
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.lpView[data-lp-view="polish"] .lpTextCol{
+  border-radius:24px;
+  padding:14px;
+  min-height:540px;
+}
+.lpView[data-lp-view="polish"] .lpTextCol:first-child{
+  background:linear-gradient(180deg, rgba(10,16,25,.92), rgba(14,21,33,.98));
+  opacity:.9;
+}
+.lpView[data-lp-view="polish"] .lpTextCol:last-child{
+  background:
+    radial-gradient(480px 150px at 12% 0%, rgba(34,211,238,.12), transparent 52%),
+    linear-gradient(180deg, rgba(14,24,38,.98), rgba(17,28,44,.99));
+  border-color:rgba(34,211,238,.28);
+  box-shadow:
+    0 0 0 1px rgba(34,211,238,.10) inset,
+    0 0 26px rgba(34,211,238,.08);
+}
+.lpView[data-lp-view="polish"] .lpTextHead{
+  margin-bottom:10px;
+}
+.lpView[data-lp-view="polish"] .lpTextTitle{
+  font-size:.93rem;
+  font-weight:900;
+  letter-spacing:-.02em;
+}
+.lpView[data-lp-view="polish"] .lpTextBody{
+  font-size:.89rem;
+  line-height:1.65;
+}
+.lpView[data-lp-view="polish"] .lpTextCol:first-child .lpTextBody{
+  color:#c7d3e3;
+}
+.lpView[data-lp-view="polish"] .lpTextCol:last-child .lpTextBody{
+  color:#eef4fc;
+}
+.lpView[data-lp-view="polish"] .lpPolishBadge{
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.04);
+  color:#d2deec;
+  font-size:.72rem;
+  font-weight:850;
+  white-space:nowrap;
+}
+.lpView[data-lp-view="polish"] .lpTextCol:last-child .lpPolishBadge{
+  border-color:rgba(34,211,238,.26);
+  background:rgba(34,211,238,.11);
+  color:#d8fbff;
+}
+.lpView[data-lp-view="polish"] .lpHiB{
+  position:relative;
+  background:rgba(34,211,238,.13);
+  border-bottom:1px solid rgba(34,211,238,.42);
+  border-radius:7px;
+  padding:1px 2px;
+  cursor:pointer;
+}
+.lpView[data-lp-view="polish"] .lpHiB .lpTinyTip{
+  position:absolute;
+  left:0;
+  bottom:126%;
+  border:1px solid rgba(255,255,255,.12);
+  background:#0b1624;
+  color:#eaf7ff;
+  border-radius:10px;
+  padding:7px 9px;
+  font-size:.72rem;
+  line-height:1.35;
+  box-shadow:0 16px 38px rgba(0,0,0,.35);
+  white-space:nowrap;
+  display:none;
+  z-index:5;
+}
+.lpView[data-lp-view="polish"] .lpHiB:hover .lpTinyTip{ display:block; }
+.lpView[data-lp-view="polish"] .lpPolishActions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.lpView[data-lp-view="polish"] .lpPolishBtn{
+  text-decoration:none;
+  border-radius:999px;
+  padding:11px 16px;
+  font-weight:850;
+  font-size:.84rem;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+  color:#ffffff;
+}
+.lpView[data-lp-view="polish"] .lpPolishBtn.primary{
+  background:linear-gradient(135deg,#22d3ee,#3b82f6);
+  color:#05111b;
+  border-color:rgba(34,211,238,.55);
+  box-shadow:0 10px 24px rgba(34,211,238,.18);
+}
+@media (max-width: 1120px){
+  .lpView[data-lp-view="polish"] .lpHeroShell,
+  .lpView[data-lp-view="polish"] .lpDiffWrap,
+  .lpView[data-lp-view="polish"] .lpMetricGrid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+<style id="lp-polish-theme-upgrade">
+.lpView[data-lp-view="polish"] .lpHeroBox,
+.lpView[data-lp-view="polish"] .lpScoreHero,
+.lpView[data-lp-view="polish"] .lpMetric,
+.lpView[data-lp-view="polish"] .lpTextCol {
+  background: linear-gradient(180deg, rgba(44,58,82,1) 0%, rgba(44,58,82,.96) 100%);
+  border: 1px solid #3a4b65;
+  border-radius: 20px;
+}
+
+.lpView[data-lp-view="polish"] {
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.45),
+    0 0 0 1px rgba(34,211,238,.04) inset;
+}
+
+.lpView[data-lp-view="polish"] .lpTextCol:last-child {
+  background: #111827;
+  border: 1px solid rgba(34,211,238,.35);
+  box-shadow:
+    0 0 0 1px rgba(34,211,238,.10) inset,
+    0 0 22px rgba(34,211,238,.10);
+  transform: translateY(-2px);
+}
+
+.lpView[data-lp-view="polish"] .lpTextCol:first-child {
+  background: #111827;
+  opacity: .88;
+}
+
+.lpScoreAfter {
+  color: #ffffff;
+  text-shadow: 0 0 18px rgba(34,211,238,.18);
+}
+
+.lpInlineDelta {
+  color: #a7fff0;
+}
+
+.lpScoreChip {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+}
+</style>
+
+
+<style id="lp-polish-font-reduction">
+.lpView[data-lp-view="polish"] {
+  font-size: 13px; /* reduced from ~14px baseline */
+}
+.lpView[data-lp-view="polish"] .lpHeroTitle {
+  font-size: 1.1rem;
+}
+.lpView[data-lp-view="polish"] .lpHeroSub {
+  font-size: 0.82rem;
+}
+.lpView[data-lp-view="polish"] .lpScoreAfter {
+  font-size: 2.4rem;
+}
+.lpView[data-lp-view="polish"] .lpScoreBefore {
+  font-size: 1.6rem;
+}
+.lpView[data-lp-view="polish"] .lpMetricValue {
+  font-size: 1.15rem;
+}
+.lpView[data-lp-view="polish"] .lpTextBody {
+  font-size: 0.82rem;
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header class="lp-header">
+<div class="brand-lockup">
+<div class="brand-mark"></div>
+<div class="brand-text">
+<div class="brand-text-main">LAUNCHPATH AI</div>
+<div class="brand-text-sub">Plan Smarter · Apply Better</div>
+</div>
+</div>
+<nav class="lp-nav">
+<a class="lp-nav-link" href="index.html">Home</a>
+<a class="lp-nav-link" href="student-workplace.html">Student Workspace</a>
+<a class="lp-nav-link" href="student-login.html" style="border-color:rgba(148,163,184,.45);">Sign In</a>
+</nav>
+</header>
+<div class="grid">
+<!-- LEFT: How it works -->
+<div aria-label="How Essay Studio works (horizontal)" class="howStrip">
+<div class="howTop">
+<div>
+<div class="howTitle">How Essay Studio works</div>
+<div class="howSub">A simple 3-step workflow students can finish in minutes.</div>
+</div>
+</div>
+<div class="howRow">
+<div class="howStep">
+<div class="howBadge">1</div>
+<div>
+<b>Strategy Review</b>
+<span>Coaching on structure, story, voice, and clarity + prioritized fixes.</span>
+</div>
+</div>
+<div class="howStep">
+<div class="howBadge">2</div>
+<div>
+<b>Highlighted Corrections</b>
+<span>Up to 20 key improvements highlighted directly in the draft.</span>
+</div>
+</div>
+<div class="howStep">
+<div class="howBadge">3</div>
+<div>
+<b>Final Polish</b>
+<span>Submission-ready cleanup while preserving student voice.</span>
+</div>
+</div>
+</div>
+</div>
+<div class="cols">
+<section aria-label="Essay Studio editor" class="card">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;">
+<div>
+<div class="h" style="margin:0 0 2px;">Essay Studio</div>
+<div class="meta">Write, review, and polish your college essay draft with AI support.</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+<button class="btn primary" id="btnStep1" title="Step 1: Coaching + Outline + Smart Review">Step 1: Strategy Review</button>
+<div class="step2wrap" style="position:relative;">
+<button class="btn ghost" id="btnStep2" disabled style="opacity:.45;cursor:not-allowed;pointer-events:none;" title="Run Step 1: Strategy Review first">Step 2: Final Polish</button>
+<span class="step2tip">Must fix all issues before proceeding</span>
+</div>
+<button class="btn ghost" id="btnSave">Save to My List</button>
+<span class="submissionReady hidden" id="submissionReadyPill">✓ Submission Ready</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:.83rem;">
+<div><b>Draft</b>  ·  <span class="link" id="viewSamples">View 5 sample essays</span></div>
+<div style="color:var(--muted2);">Tip: Use samples for ideas, then rewrite in your own words and voice.</div>
+</div>
+<!-- Sample Essays (Inline Panel) -->
+<div aria-label="Sample essays panel" class="samplesPanel hidden" id="samplesPanel">
+<div class="samplesPanelHeader">
+<div class="samplesPanelTitle">Sample Essays (for inspiration)</div>
+<div class="samplesPanelActions">
+<button class="btn ghost" id="samplesCopyBtn" type="button">Copy</button>
+<button class="btn ghost" id="samplesCloseBtn" title="Please Fix your Issues" type="button">Close</button>
+</div>
+</div>
+<div class="samplesPanelBody">
+<div class="samplesTiles" id="samplesTiles"></div>
+<div class="samplesPreview">
+<div class="samplesPreviewTitle" id="samplesPreviewTitle">Select a sample</div>
+<div class="samplesPreviewMeta" id="samplesPreviewMeta">Click a tile to view the full sample.</div>
+<div class="samplesPreviewText" id="samplesPreviewText"></div>
+<div class="lpPanel" style="margin-top:12px">
+<div class="lpPanelTitle">How to interpret your scores</div>
+<div class="lpPanelSub">Use these ranges to understand where your essay stands right now.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
+<div class="lpItem">
+<div class="lpItemTitle">90–100 = Standout</div>
+<div class="lpItemSub">Top-tier, distinctive, and likely memorable to admissions readers.</div>
+</div>
+<div class="lpItem">
+<div class="lpItemTitle">80–89 = Strong</div>
+<div class="lpItemSub">Competitive essay with only minor improvements still needed.</div>
+</div>
+<div class="lpItem">
+<div class="lpItemTitle">70–79 = Solid</div>
+<div class="lpItemSub">Good foundation, but needs sharper insight and differentiation.</div>
+</div>
+<div class="lpItem">
+<div class="lpItemTitle">60–69 = Developing</div>
+<div class="lpItemSub">Shows promise but still lacks distinction.</div>
+</div>
+</div>
+<div class="lpList" style="margin-top:12px;">
+<div class="lpItem">
+<div class="lpItemTitle">Risk levels</div>
+<div class="lpItemSub">Low = no major red flags · Medium = some concerns · High = likely to hurt admissions chances.</div>
+</div>
+<div class="lpItem">
+<div class="lpItemTitle">How scores are generated</div>
+<div class="lpItemSub">Scores are based on structure, clarity, voice, and specificity, then adjusted for strategy and risk.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="editor" style="position:relative;">
+<textarea id="draft" placeholder="Start writing here, or paste a paragraph you want LaunchPath AI to review..."></textarea>
+<div class="wordCountFloat" id="wordMeta">Words: <b id="wordCount">0</b> / 650</div>
+<div aria-label="Highlighted Draft Preview" class="draftView hidden" id="draftView"></div>
+</div>
+<div class="bottomRow">
+<div class="pillRow">Structure · Story · Voice · Polish</div>
+<div aria-label="Draft strength bar" class="bar"><div id="barFill"></div></div>
+<div class="goal">Goal: <b>80+</b> before submit · Admissions lens</div>
+</div>
+</section><section aria-label="LP Coaching Panel" class="card coachCard">
+<div class="hRow">
+<div>
+<div class="h">LP Coaching Panel</div>
+<div class="sub">Target readiness: <b>80+</b>. Run <b>Step 1</b> to generate coaching + highlights.</div>
+</div>
+<div class="scorePill"><span id="scoreVal">—</span>/100</div>
+</div>
+<div aria-label="Readiness score bar" class="miniBar">
+<div id="coachBarFill"></div>
+</div>
+<div style="display:flex; justify-content:space-between; color: var(--muted2); font-size: 11.5px;">
+<span>0</span><span>Target: 80</span><span>100</span>
+</div>
+<div class="coachTabs" id="coachTabs">
+<button class="coachTab active" data-tab="overview" type="button">Overview</button>
+<button class="coachTab" data-tab="issues" type="button">Issues</button>
+<button class="coachTab" data-tab="sentences" type="button">Sentences</button>
+<button class="coachTab" data-tab="outline" type="button">Outline</button>
+<button class="coachTab" data-tab="questions" type="button">Questions</button>
+</div>
+<div aria-label="Issue severity filters" class="issuePills hidden" id="issuePills">
+<button class="pill active" data-filter="all" type="button">All (<span id="pillAll">0</span>)</button>
+<button class="pill" data-filter="warn" type="button">Warnings (<span id="pillWarn">0</span>)</button>
+<button class="pill" data-filter="amber" type="button">Amber (<span id="pillAmber">0</span>)</button>
+<button class="pill" data-filter="minor" type="button">Minor (<span id="pillMinor">0</span>)</button>
+</div>
+<div class="coachBlocks">
+<div aria-label="Coach Scorecard" class="coachBlock" data-tab="overview" id="coachScorecardBlock">
+<div class="t">Coach Scorecard</div>
+<div class="body">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px">
+<div>
+<div style="font-weight:900;margin-bottom:4px">Structure</div>
+<div class="miniBar"><div id="scStructure"></div></div>
+<div style="color:rgba(255,255,255,.62);font-size:11.5px"><span id="scStructureVal">—</span>/25</div>
+</div>
+<div>
+<div style="font-weight:900;margin-bottom:4px">Clarity</div>
+<div class="miniBar"><div id="scClarity"></div></div>
+<div style="color:rgba(255,255,255,.62);font-size:11.5px"><span id="scClarityVal">—</span>/25</div>
+</div>
+<div>
+<div style="font-weight:900;margin-bottom:4px">Voice</div>
+<div class="miniBar"><div id="scVoice"></div></div>
+<div style="color:rgba(255,255,255,.62);font-size:11.5px"><span id="scVoiceVal">—</span>/25</div>
+</div>
+<div>
+<div style="font-weight:900;margin-bottom:4px">Specificity</div>
+<div class="miniBar"><div id="scSpecificity"></div></div>
+<div style="color:rgba(255,255,255,.62);font-size:11.5px"><span id="scSpecificityVal">—</span>/25</div>
+</div>
+</div>
+<div id="coachOneLine" style="margin-top:10px;color:rgba(255,255,255,.72);font-size:12px">
+      Run <b>Step 1</b> to generate your score + top fixes.
+    </div>
+</div>
+</div>
+<div aria-label="Coach Action Plan" class="coachBlock" data-tab="overview" id="coachPlanBlock">
+<div class="t">Action Plan (do these next)</div>
+<div class="body">
+<div id="coachPlan" style="display:grid;gap:8px;margin-top:6px">
+<div style="color:rgba(255,255,255,.62)">Run <b>Step 1</b> to see a prioritized plan.</div>
+</div>
+</div>
+</div>
+<div aria-label="Coach Questions" class="coachBlock" data-tab="questions" id="coachQuestionsBlock">
+<div class="t">Coach Questions</div>
+<div class="body">
+<div id="coachQuestions" style="display:grid;gap:8px;margin-top:6px">
+<div style="color:rgba(255,255,255,.62)">Run <b>Step 1</b> to generate coaching questions.</div>
+</div>
+</div>
+</div>
+<div aria-label="Sentence Suggestions" class="coachBlock" data-tab="sentences" id="coachSentenceBlock">
+<div class="t">Sentence Suggestions (optional)</div>
+<div class="body">
+<div style="color:rgba(255,255,255,.62);font-size:12px;margin-bottom:8px">
+      Suggestions are <b>sentence-level</b> to preserve student voice (no full essay writing).
+    </div>
+<div id="coachSentenceList" style="display:grid;gap:10px">
+<div style="color:rgba(255,255,255,.70);font-size:12.5px;line-height:1.5">
+    Click an <b>Amber</b> or <b>Warning</b> item in the <b>Issues</b> tab to open a focused suggestion.
+  </div>
+</div>
+</div>
+</div>
+</div>
+<div aria-label="Outline Builder" class="coachBlock" data-tab="outline" id="coachOutlineBlock">
+<div class="t">Outline Builder</div>
+<div class="body">
+<div id="coachOutline" style="display:grid;gap:8px;margin-top:6px">
+<div style="color:rgba(255,255,255,.62)">Run <b>Step 1</b> to generate a suggested outline.</div>
+</div>
+</div>
+</div>
+<div aria-label="LP Issue Map" class="coachBlock" data-tab="issues">
+<div class="t">LP Issue Map (Top Fixes)</div>
+<div class="body">
+<div class="issueList" id="issueList"></div>
+</div>
+</div>
+<div aria-label="Final Polish Preview" class="coachBlock" id="polishBlock" style="display:none">
+<div class="t">Final Polish (Step 2)</div>
+<div class="body">
+<div id="polishPreview" style="white-space:pre-wrap;line-height:1.5;color:rgba(255,255,255,.92)"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+<button class="miniBtn primary" id="copyPolished" type="button">Copy Final</button>
+<button class="miniBtn" id="openBeforeAfter2" type="button">Before / After</button>
+</div>
+</div>
+</div>
+<div aria-label="Highlights note" class="coachBlock">
+<div class="t">Highlighted corrections</div>
+<div class="body">Up to <b>20</b> key improvements will be highlighted directly in the draft after Step 1.</div>
+</div>
+</section></div>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+<script>
+/* ===== LP Step 1: highlight up to 20 + map to right pane (demo) ===== */
+(function(){
+  const MAX = 20;
+  const FILLERS = ["very","really","kind of","sort of","basically","literally","a lot"];
+  // Note: "just" removed from fillers — too many false positives (e.g. "just as a building")
+  const VAGUE = ["good","bad","nice","great","amazing","awesome","interesting","important","thing","things","stuff"];
+  const PASSIVE = /\b(was|were|is|are|been|being)\b\s+\b\w+(ed|en)\b/i;
+  const WEAK_START = /^(there is|there are|i think|i feel|in conclusion|overall)\b/i;
+
+  const $ = (id)=>document.getElementById(id);
+
+  // Simple toast helper (keeps UI clean after re-render)
+  function lpToast(msg, kind="ok", ms=3000){
+    const el = $("toast");
+    if(!el) return;
+    el.textContent = msg || "";
+    el.classList.add("show");
+    if(lpToast._t) clearTimeout(lpToast._t);
+    lpToast._t = setTimeout(()=>{
+      el.classList.remove("show");
+      el.textContent = "";
+    }, ms);
+  }
+
+  // Dedupe issues so pill filters don't show repeated identical items (demo-friendly)
+  function lpDedupeIssues(items){
+    const arr = Array.isArray(items) ? items : [];
+    const map = new Map();
+    arr.forEach(it=>{
+      const sent = String(it?.sentence||"").trim().replace(/\s+/g," ").toLowerCase();
+      const key = `${it?.type||""}|${it?.cls||""}|${it?.sev||0}|${sent}`;
+      if(!map.has(key)){
+        const copy = Object.assign({}, it);
+        copy._dupCount = 1;
+        copy._dupSidx = [it?.sidx];
+        map.set(key, copy);
+      } else {
+        const cur = map.get(key);
+        cur._dupCount = (cur._dupCount||1) + 1;
+        cur._dupSidx = cur._dupSidx || [];
+        cur._dupSidx.push(it?.sidx);
+      }
+    });
+    return Array.from(map.values());
+  }
+
+  function sentenceSplit(text){
+    return text.replace(/\s+/g,' ')
+      .split(/(?<=[\.\!\?])\s+(?=[A-Z0-9“"'])/)
+      .map(s=>s.trim())
+      .filter(Boolean);
+  }
+  function esc(s){
+    return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function score(sentence, idx){
+    const issues = [];
+    const lower = sentence.toLowerCase();
+    const wc = sentence.split(/\s+/).filter(Boolean).length;
+
+    if(wc >= 28) issues.push({type:"Clarity", cls:"c", sev:3, why:"This sentence is long. Split it into two and lead with the key point."});
+    if(PASSIVE.test(sentence)) issues.push({type:"Voice", cls:"p", sev:2, why:"Passive voice reduces impact. Rewrite in active voice (who did what?)."});
+    // Hook only valid on opening sentences (0-2), cliché detection for later sentences
+    if(idx <= 2 && /^(there is|there are|i think|i feel)/i.test(lower)){
+      issues.push({type:"Hook", cls:"r", sev:3, why:"Weak opener. Start with a specific moment or action to hook the reader."});
+    }
+    // Cliché detection for any sentence
+    if(/(in conclusion|in summary|overall,|throughout my life|at the end of the day)/i.test(lower)){
+      issues.push({type:"Cliché", cls:"r", sev:3, why:"Admissions readers flag this phrase. Replace with a specific, forward-looking closing line."});
+    }
+
+    const fillerHits = FILLERS.filter(w=>lower.includes(w));
+    if(fillerHits.length) issues.push({type:"Wording", cls:"w", sev:1, why:`Remove filler (${fillerHits.slice(0,3).join(", ")}). Be more direct.`});
+
+    const vagueHits = VAGUE.filter(w=>new RegExp(`\\b${w}\\b`,'i').test(sentence));
+    if(vagueHits.length) issues.push({type:"Specificity", cls:"w", sev:2, why:`Replace vague words (${vagueHits.slice(0,3).join(", ")}). Add details, numbers, or outcomes.`});
+
+    if(/\b(i learned|i realized|i understood)\b/i.test(sentence) && wc < 22){
+      issues.push({type:"Depth", cls:"p", sev:2, why:"Insight is stated but not proven. Add a short example or what changed in your behavior."});
+    }
+
+    issues.forEach(it=>{
+      it.sidx = idx;
+      it.sentence = sentence;
+    });
+    return issues;
+  }
+
+  
+  function lpReplaceSentenceAtIndex(sidx, newSentence){
+    const ta = document.getElementById("essayText") || document.getElementById("draft");
+    if(!ta) return;
+    const text = (ta.value||"").trim();
+    const parts = sentenceSplit(text);
+    if(!parts.length || !Number.isFinite(sidx) || sidx<0 || sidx>=parts.length){
+      return;
+    }
+    parts[sidx] = newSentence;
+    ta.value = parts.join(" ");
+    // re-run step 1 (highlights + coaching)
+    if(typeof runStep1 === "function"){
+      runStep1();
+      // try to jump to the updated highlight
+      setTimeout(()=>{
+        const mark = document.querySelector(`mark[data-sidx="${sidx}"]`);
+        if(mark){ mark.scrollIntoView({behavior:"smooth", block:"center"}); mark.classList.add("pulse"); setTimeout(()=>mark.classList.remove("pulse"),900); }
+      }, 80);
+    }
+  }
+
+function generateRewrite(sentence, type){
+    const s = sentence.trim().replace(/\s+/g,' ');
+    if(type==="Clarity"){
+      const parts = s.split(/,\s+| and /);
+      if(parts.length>=2){
+        let tail = parts.slice(1).join(" ").trim();
+        tail = tail.replace(/^and\s+/i,"");
+        if(tail.length) tail = tail[0].toUpperCase() + tail.slice(1);
+        return parts[0].trim()+". "+tail;
+      }
+      return "Rewrite shorter: Start with the main action, then add one supporting detail.";
+    }
+
+    if(type==="Hook"){
+      return "Start with a specific moment: “In [place/time], I [did action], and it changed how I [think/act].”";
+    }
+    if(type==="Voice"){
+      // Safe passive rewrites — only fix clear patterns, don't blindly remove was/were
+      let r = s;
+      r = r.replace(/\bwas (hindered|delayed|given|told|made|completed|finished|built|written|created|designed|placed|used|called|known|seen|found) by\b/gi, (m,v)=>`underwent ${v}`);
+      r = r.replace(/\bwere (hindered|delayed|given|told|made|completed|finished|built|written|created|designed|placed|used|called|known|seen|found) by\b/gi, (m,v)=>`underwent ${v}`);
+      r = r.replace(/\bhave been (fascinated|inspired|motivated|driven|shaped) by\b/gi, (m,v)=>`find ${v.replace(/ed$/,"ing")} in`);
+      r = r.replace(/\bI have always been fascinated by\b/gi, "I have always found fascination in");
+      r = r.replace(/\bI was (immediately|quickly|suddenly)\b/gi, (m,adv)=>`I felt ${adv}`);
+      r = r.replace(/\bour progress was often hindered\b/gi, "our progress often stalled");
+      r = r.replace(/\bour supplies were delayed\b/gi, "our supplies arrived late");
+      // Clean up
+      r = r.replace(/\s{2,}/g,' ').trim();
+      // If no change was made, give a useful instruction instead of broken text
+      if(r === s) return "Rewrite in active voice: who did what? Lead with the subject performing the action.";
+      return r;
+    }
+    if(type==="Specificity"){
+      return s.replace(/\b(good|great|nice|amazing|awesome|interesting|important)\b/gi,"meaningful")
+              .replace(/\bthings\b|\bstuff\b/gi,"specific outcomes")
+              .trim();
+    }
+    if(type==="Depth"){
+      return s + " For example, I [specific action] and the result was [measurable outcome].";
+    }
+    // Wording
+    return s.replace(/\bvery\b|\breally\b|\bjust\b|\bkind of\b|\bsort of\b|\bbasically\b|\bliterally\b|\bactually\b/gi,"")
+            .replace(/\s{2,}/g,' ')
+            .trim();
+  }// Replace a single highlighted sentence in-place and keep the editable textarea in sync.
+function lpReplaceSentence(sidx, newSentence){
+  const idx = Number(sidx);
+  if(!Number.isFinite(idx)) return;
+
+  window.lpEssayState = window.lpEssayState || {};
+  // Baseline snapshot for Before/After (original essay before Step 1)
+  const __state = window.lpEssayState;
+  if(typeof __state.baselineBefore === "undefined") __state.baselineBefore = null;
+  if(typeof __state.afterPolish === "undefined") __state.afterPolish = "";
+  const state = window.lpEssayState;
+
+  state.replacements = state.replacements || {};
+  state.replacements[idx] = String(newSentence || "").trim();
+
+  // Update the marked highlight in the rendered view (if present)
+  const mark = document.querySelector(`mark[data-sidx="${idx}"]`);
+  if(mark){
+    const cls = mark.getAttribute("data-issue") || "";
+    mark.innerHTML = `${esc(state.replacements[idx])}<span class="rewriteTip"><div class="tipTitle">Replaced</div><div class="tipBody">${esc(state.replacements[idx])}</div></span>`;
+    mark.setAttribute("data-issue", cls);
+  }
+
+  // Update the editable textarea draft value using the last known sentence split
+  if(Array.isArray(state.sents) && state.sents.length){
+    const merged = state.sents.map((s,i)=> (state.replacements[i] ? state.replacements[i] : s)).join(" ");
+    $("draft").value = merged;
+  }
+  // Re-run analysis so highlights, counts, and score update immediately
+}
+
+  function renderIssueList(items){
+  const root = $("issueList");
+  root.innerHTML = "";
+
+  const list = document.createElement("div");
+  list.className = "issueList";
+  root.appendChild(list);
+
+  const arr = Array.isArray(items) ? items : [];
+  const deduped = lpDedupeIssues(arr);
+  if(!deduped.length){
+    const msg = document.createElement("div");
+    msg.className = "muted";
+    msg.style.padding = "8px 0";
+    msg.textContent = "No items in this filter.";
+    list.appendChild(msg);
+    return;
+  }
+
+  // sort: highest severity first, then by sentence position
+  const sorted = arr.slice().sort((a,b)=>{
+    if((b.sev||0)!==(a.sev||0)) return (b.sev||0)-(a.sev||0);
+    return (a.sidx||0)-(b.sidx||0);
+  });
+
+  sorted.forEach((it)=>{
+    const card = document.createElement("div");
+    card.className = "issueItem";
+    card.dataset.sidx = String(it.sidx ?? -1);
+    card.tabIndex = 0;
+
+    const top = document.createElement("div");
+    top.style.display = "flex";
+    top.style.gap = "10px";
+    top.style.alignItems = "center";
+    top.style.justifyContent = "space-between";
+
+    const left = document.createElement("div");
+    left.style.display = "flex";
+    left.style.flexDirection = "column";
+
+    const sevPill = document.createElement("span");
+    const sev = it.sev || 0;
+    sevPill.className = "pill " + (sev>=3 ? "pillR" : (sev===2 ? "pillA" : "pillW"));
+    sevPill.textContent = sev>=3 ? "Warning" : (sev===2 ? "Amber" : "Minor");
+
+    const title = document.createElement("div");
+    title.style.fontWeight = "900";
+    title.style.fontSize = "13px";
+    title.style.marginTop = "6px";
+    title.textContent = (it.type || "Issue") + (Number.isFinite(it.sidx) ? ` • Sentence ${Number(it.sidx)+1}` : "") + ((it._dupCount||1)>1 ? ` • ${it._dupCount} similar` : "");
+
+    left.appendChild(sevPill);
+    left.appendChild(title);
+
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.gap = "8px";
+    actions.style.alignItems = "center";
+
+    const btnReplace = document.createElement("button");
+    btnReplace.type = "button";
+    btnReplace.className="btn small";
+    btnReplace.textContent = "Replace sentence";
+    btnReplace.dataset.action = "replace";
+    btnReplace.dataset.sidx = String(it.sidx ?? -1);
+    btnReplace.dataset.rewrite = it.rewrite || "";
+    actions.appendChild(btnReplace);
+
+    top.appendChild(left);
+    top.appendChild(actions);
+
+    const why = document.createElement("div");
+    why.className = "muted";
+    why.style.marginTop = "6px";
+    why.textContent = it.why || "";
+
+    const excerpt = document.createElement("div");
+    excerpt.style.marginTop = "8px";
+    excerpt.style.fontSize = "13px";
+    excerpt.style.color = "rgba(255,255,255,.88)";
+    excerpt.style.lineHeight = "1.45";
+    excerpt.textContent = (it.rewrite && it.rewrite.trim()) ? it.rewrite : (it.sentence || "");
+
+    card.appendChild(top);
+    card.appendChild(why);
+    card.appendChild(excerpt);
+
+    const jump = ()=>{
+      const mark = document.querySelector(`mark[data-sidx="${it.sidx}"]`);
+      if(mark){
+        mark.scrollIntoView({behavior:"smooth", block:"center"});
+        mark.classList.add("flash");
+        setTimeout(()=>mark.classList.remove("flash"), 800);
+      }
+    };
+
+    card.addEventListener("click",(e)=>{
+      if(e.target && e.target.dataset && e.target.dataset.action==="replace") return;
+      jump();
+    });
+    card.addEventListener("keydown",(e)=>{
+      if(e.key==="Enter" || e.key===" "){
+        e.preventDefault();
+        jump();
+      }
+    });
+
+    btnReplace.addEventListener("click",(e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const sidx = parseInt(btnReplace.dataset.sidx,10);
+      const rw = btnReplace.dataset.rewrite || "";
+      if(!Number.isFinite(sidx) || !rw) return;
+      btnReplace.textContent = "Replaced ✓";
+      btnReplace.disabled = true;
+      // Remove the issue card immediately for a clean demo feel
+      card.style.transition = "opacity 160ms ease";
+      card.style.opacity = "0";
+      setTimeout(()=>{ try{ card.remove(); }catch(e){} }, 180);
+      // Apply replacement + re-run analysis after UI feedback
+      window.lpEssayState = window.lpEssayState || {};
+      const state = window.lpEssayState;
+      state.replacements = state.replacements || {};
+      state.replacements[sidx] = rw;
+      if(typeof lpReplaceSentenceAtIndex === "function") lpReplaceSentenceAtIndex(sidx, rw);
+      // Step 1 auto re-run removed — student controls when to re-analyze
+    });
+
+    list.appendChild(card);
+  });
+
+  // expose for pill filtering re-render
+  window.lpLastIssues = arr;
+}
+// expose to pill controller
+window.renderIssueList = renderIssueList;
+
+
+  function apply(text){
+    const draft = $("draft");
+    const view = $("draftView");
+    if(!draft || !view) return;
+
+    const sents = sentenceSplit(text);
+    // Persist sentence split for replacement + regression-friendly demos
+    window.lpEssayState = window.lpEssayState || {};
+    const state = window.lpEssayState;
+    state.sents = sents.slice();
+    state.replacements = state.replacements || {};
+    let issues = [];
+    sents.forEach((s,i)=> issues = issues.concat(score(s,i)));
+    issues.sort((a,b)=> (b.sev-a.sev) || (a.sidx-b.sidx));
+    // If a sentence has been replaced, treat it as resolved for this demo run
+    // (removes its highlight and reduces the issue count/score penalty)
+    issues = issues.filter(it => !Object.prototype.hasOwnProperty.call(state.replacements, it.sidx));
+
+    const chosenAll = issues.slice(0, MAX).map(it=>{
+      const sent = sents[it.sidx] || "";
+      return {
+        ...it,
+        sent,
+        rewrite: generateRewrite(sent, it.type)
+      };
+    });
+    // keep state for Replace Sentence
+    window.lpEssayState = window.lpEssayState || {};
+    window.lpEssayState.sents = sents.slice();
+    // pick one issue per sentence (highest severity)
+    const bySent = new Map();
+    chosenAll.forEach(it=>{
+      const cur = bySent.get(it.sidx);
+      if(!cur || it.sev > cur.sev) bySent.set(it.sidx, it);
+    });
+
+    // Build highlighted HTML
+    let out = "";
+    sents.forEach((s,i)=>{
+      const it = bySent.get(i);
+      if(it){
+        const rw = generateRewrite(s, it.type);
+        out += `<mark data-issue="${esc(it.type)}" data-sidx="${i}" class="${it.cls} ${it.sev>=3? "sev-warn" : (it.sev===2? "sev-amber" : "sev-minor")}">${esc(s)}
+          <span class="rewriteTip">
+            <div class="tipTitle">LP Suggested Rewrite</div>
+            <div class="tipBody">${esc(rw)}</div>
+            <button class="copyBtn" data-copy-inline="${i}" data-sidx="${i}" data-type="${esc(it.type)}" data-sentence="${esc(s)}">Copy suggestion</button>
+          </span>
+        </mark> `;
+      } else {
+        out += esc(s) + " ";
+      }
+    });
+
+    view.innerHTML = out.trim();
+    view.classList.remove("hidden");
+    draft.classList.add("hidden");
+
+    // wire inline copy
+    view.querySelectorAll("[data-copy-inline]").forEach(btn=>{
+      btn.textContent = "Replace sentence";
+      btn.addEventListener("click", async (e)=>{
+        e.preventDefault(); e.stopPropagation();
+        try{
+          const mark = btn.closest("mark");
+          const sidx = Number(btn.getAttribute("data-sidx") ?? (mark ? mark.getAttribute("data-sidx") : NaN));
+          const type = btn.getAttribute("data-type") || (mark ? mark.getAttribute("data-issue") : null) || "Wording";
+          const raw = btn.getAttribute("data-sentence") || (mark ? mark.textContent : "") || "";
+          const rewrite = generateRewrite(raw, type);
+          lpReplaceSentenceAtIndex(sidx, rewrite);
+          lpToast("Sentence replaced ✅");
+        }catch(err){
+          console.error(err);
+          lpToast("Could not replace sentence");
+        }
+      });
+    });
+
+    // Update coaching text
+    const fb = $("feedbackText");
+    if(fb){
+      fb.innerHTML = `Found <b>${Math.min(MAX, chosenAll.length)}</b> priority improvements. Use the Issue Map to jump to exact lines.`;
+    }
+    const ot = $("outlineText");
+    if(ot){
+      ot.innerHTML = `Suggested flow: <b>Hook → Context → Challenge → Action → Result → Reflection</b>. Make each section specific with concrete moments and outcomes.`;
+    }
+
+    // Update score (simple)
+    const scoreVal = $("scoreVal");
+    const fill = $("coachBarFill");
+    if(scoreVal){
+      const base = 90;
+      const penalty = Math.min(50, chosenAll.length * 2);
+      const score = Math.max(35, base - penalty);
+      scoreVal.textContent = String(score);
+      if(fill) fill.style.width = score + "%";
+    }
+
+    // Build right pane issue list
+    window.lpAllIssues = chosenAll;
+    renderIssueList(chosenAll);
+    // Show + count issue filter pills (under tabs)
+    if(typeof window.updateIssuePills === "function"){ try{ window.updateIssuePills(chosenAll); }catch(e){} }
+
+    // Expose latest Issue Map items for Coach Engine
+    window.lpLastIssues = chosenAll;
+    if(typeof window.lpCoachSyncFromIssues === "function"){
+      try{ window.lpCoachSyncFromIssues(chosenAll); }catch(e){}
+    }
+}
+
+  function runStep1(){
+    const draft = $("draft");
+    if(!draft) return;
+    const text = (draft.value||"").trim();
+    const words = text.split(/\s+/).filter(Boolean).length;
+    if(words < 20){
+      alert("Paste a longer essay (20+ words) to run Strategy Review.");
+      return;
+    }
+    // Only capture original essay on first run — not after Replace Sentence re-runs
+    if(!window.__lpStep1Ran){
+      window.__lpBeforeScore = 0;
+      window.__lpBeforeText = text;
+    }
+    apply(text);
+    window.__lpStep1Ran = true;
+    // __lpBeforeScore is now captured in renderCoach() at computation time
+    // Visual workflow: advance highlight to Step 2 after Step 1 completes
+    try{
+      const b1 = $("btnStep1");
+      const b2 = $("btnStep2");
+      if(b1){ b1.classList.remove("primary"); b1.classList.add("ghost"); }
+      if(b2){
+        b2.classList.remove("ghost"); b2.classList.add("primary");
+        b2.classList.remove("lpBlocked"); b2.classList.add("lpUnlocked");
+        b2.disabled = false;
+        b2.style.opacity = "1";
+        b2.style.cursor = "pointer";
+        b2.style.pointerEvents = "auto";
+        b2.title = "Step 2: Final Polish";
+      }
+    }catch(e){}
+  }
+
+  // Wire Step 1 button
+  const btn = $("btnStep1");
+  if(btn){
+    btn.addEventListener("click", (e)=>{ e.preventDefault(); runStep1(); });
+  }
+
+  // Keep Before/After toggle working
+  const ba = $("btnBeforeAfter");
+  if(ba){
+    ba.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const draft = $("draft");
+      const view = $("draftView");
+      if(!draft || !view) return;
+      const showing = !view.classList.contains("hidden");
+      if(showing){
+        view.classList.add("hidden");
+        draft.classList.remove("hidden");
+      } else {
+        // If view is empty, run Step 1; else show view
+        if(!view.innerHTML.trim()) runStep1();
+        else { draft.classList.add("hidden"); view.classList.remove("hidden"); }
+      }
+    });
+  }
+})();
+</script>
+<script>
+/* ===== Step 2 modal-first + Apply fixes from Issue Map (stable override) ===== */
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  window.beforeText = window.beforeText || "";
+  window.afterText = window.afterText || "";
+  let beforeText = window.beforeText;
+  let afterText = window.afterText;
+  let lastIssues = [];   // store issues with sentence index + rewrite
+
+  function getDraftText(){
+    const ta = $("draft");
+    return (ta?.value || "").trim();
+  }
+  function setDraftText(t){
+    const ta = $("draft");
+    if(ta) ta.value = t;
+  }
+
+  
+function polish(text){
+  // SAFE polish only — phrase substitutions only.
+  // Never splits or restructures sentences or paragraphs.
+  // Preserves all original structure exactly.
+  const raw = (text||"").replace(/\r\n/g,"\n").trim();
+
+  // Preserve paragraph structure exactly
+  const paras = raw.split(/\n\s*\n+/);
+
+  const cleaned = paras.map(p=>{
+    let t = p;
+    // Cliché phrase replacements
+    t = t.replace(/\bIn conclusion,?\s*/g, "Looking back, ");
+    t = t.replace(/\bIn summary,?\s*/g, "Ultimately, ");
+    t = t.replace(/\bAt the end of the day,?\s*/g, "Ultimately, ");
+    t = t.replace(/\bdue to the fact that\b/gi, "because");
+    t = t.replace(/\bin order to\b/gi, "to");
+    t = t.replace(/\bit is important to note that\s*/gi, "");
+    t = t.replace(/\bthe fact that\b/gi, "that");
+    t = t.replace(/\bI think\b/g, "I believe");
+    t = t.replace(/\bI feel like\b/gi, "I found that");
+    t = t.replace(/\ba lot of\b/gi, "many");
+    // Safe targeted passive fixes only
+    t = t.replace(/\bour progress was often hindered\b/gi, "our progress often stalled");
+    t = t.replace(/\bour supplies were delayed\b/gi, "our supplies arrived late");
+    t = t.replace(/\bI have always been fascinated by\b/gi, "I have always found fascination in");
+    t = t.replace(/\bwas given\b/gi, "received");
+    t = t.replace(/\bwere given\b/gi, "received");
+    t = t.replace(/\bwas told\b/gi, "learned");
+    // Clean up any double spaces from substitutions only
+    t = t.replace(/  +/g, " ").trim();
+    return t;
+  });
+
+  return cleaned.join("\n\n");
+}
+
+
+function autoParagraphize(t){
+  // Returns text as-is if it already has paragraph breaks.
+  // Only adds breaks for single-block essays with no formatting.
+  const txt = (t||"").replace(/\r\n/g,"\n").trim();
+  if(!txt) return txt;
+  if(/\n\s*\n/.test(txt)) return txt; // already structured — leave alone
+  // Single block with no breaks — add every 5 sentences to preserve flow
+  const sents = txt.split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(Boolean);
+  if(sents.length <= 5) return txt;
+  const groups = [];
+  for(let i=0;i<sents.length;i+=5) groups.push(sents.slice(i,i+5).join(" "));
+  return groups.join("\n\n");
+}
+
+
+
+  function sentenceSplit(text){
+    return text.replace(/\s+/g,' ')
+      .split(/(?<=[\.\!\?])\s+(?=[A-Z0-9“"'])/)
+      .map(s=>s.trim()).filter(Boolean);
+  }
+
+  
+function splitSents(t){
+  return (t||"").trim().split(/(?<=[\.\!\?])\s+/).map(s=>s.trim()).filter(Boolean);
+}
+
+function escapeHTML(s){
+  return String(s||"")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function renderParagraphsHTML(text){
+  const t = (text||"").replace(/\r\n/g,"\n").trim();
+  if(!t) return "";
+  const paras = t.split(/\n\s*\n+/).map(p=>p.trim()).filter(Boolean);
+  return paras.map(p=>`<p style="margin:0 0 12px 0;">${escapeHTML(p).replace(/\n/g,"<br>")}</p>`).join("") || "";
+}
+function countSyllables(word){
+  const w = String(word||"").toLowerCase().replace(/[^a-z]/g,"");
+  if(!w) return 0;
+  // naive vowel-group syllable count
+  const groups = w.match(/[aeiouy]+/g);
+  let n = groups ? groups.length : 0;
+  // silent trailing 'e'
+  if(w.endsWith("e") && n>1) n--;
+  return Math.max(1, n);
+}
+function fleschKincaidGrade(text){
+  const t = (text||"").trim();
+  if(!t) return null;
+  const words = t.split(/\s+/).filter(Boolean);
+  const sents = splitSents(t);
+  const wordCount = words.length || 1;
+  const sentCount = Math.max(1, sents.length);
+  let syll = 0;
+  for(const w of words){ syll += countSyllables(w); }
+  // FK Grade = 0.39*(words/sents) + 11.8*(syll/words) - 15.59
+  const grade = 0.39*(wordCount/sentCount) + 11.8*(syll/wordCount) - 15.59;
+  return Math.round(grade*10)/10;
+}
+function countMatches(text, regex){
+  const m = (text||"").match(regex);
+  return m ? m.length : 0;
+}
+function countLongSentences(text, thresholdWords=28){
+  const sents = splitSents((text||"").trim());
+  let c = 0;
+  for(const s of sents){
+    const wc = s.split(/\s+/).filter(Boolean).length;
+    if(wc >= thresholdWords) c++;
+  }
+  return c;
+}
+function summarizeChanges(before, after){
+  const b = (before||"").trim();
+  const a = (after||"").trim();
+
+  const bWords = b ? b.split(/\s+/).filter(Boolean).length : 0;
+  const aWords = a ? a.split(/\s+/).filter(Boolean).length : 0;
+
+  const bParas = b ? b.split(/\n\s*\n+/).filter(p=>p.trim()).length : 0;
+  const aParas = a ? a.split(/\n\s*\n+/).filter(p=>p.trim()).length : 0;
+
+  const bS = splitSents(b);
+  const aS = splitSents(a);
+
+  // sentence-level change estimate (positionally aligned)
+  const n = Math.min(bS.length, aS.length);
+  let changed = 0;
+  for(let i=0;i<n;i++){
+    const x = bS[i].replace(/\s+/g," ").trim();
+    const y = aS[i].replace(/\s+/g," ").trim();
+    if(x && y && x.toLowerCase() !== y.toLowerCase()) changed++;
+  }
+  const added = Math.max(0, aS.length - bS.length);
+  const removed = Math.max(0, bS.length - aS.length);
+
+  const deltaWords = aWords - bWords;
+  const direction = deltaWords === 0 ? "no change" : (deltaWords < 0 ? `${Math.abs(deltaWords)} fewer words` : `${deltaWords} more words`);
+
+  // Clarity: long sentences + filler phrases
+  const fillerRe = /\b(really|very|just|basically|actually|literally|kind of|sort of|in order to|a lot|maybe|somewhat)\b/gi;
+  const bLong = countLongSentences(b, 28);
+  const aLong = countLongSentences(a, 28);
+  const bFiller = countMatches(b, fillerRe);
+  const aFiller = countMatches(a, fillerRe);
+
+  // Tone: passive voice + vague words
+  const passiveRe = /\b(was|were|is|are|been|being)\b\s+\b\w+ed\b/gi;
+  const vagueRe = /\b(things|stuff|good|nice|bad|great|a lot|many|some|various|interesting)\b/gi;
+  const bPassive = countMatches(b, passiveRe);
+  const aPassive = countMatches(a, passiveRe);
+  const bVague = countMatches(b, vagueRe);
+  const aVague = countMatches(a, vagueRe);
+
+  // Readability: FK grade + concision metrics
+  const bFK = fleschKincaidGrade(b);
+  const aFK = fleschKincaidGrade(a);
+  const bWPS = bS.length ? Math.round((bWords/bS.length)*10)/10 : null;
+  const aWPS = aS.length ? Math.round((aWords/aS.length)*10)/10 : null;
+
+  // Readiness gain: use existing score() if available
+  let bScore = null, aScore = null, deltaScore = null;
+  try{
+    if(typeof score === "function"){
+      bScore = score(b).score;
+      aScore = score(a).score;
+      deltaScore = aScore - bScore;
+    }
+  }catch(e){}
+
+  return {
+    bWords, aWords, bParas, aParas,
+    bSent: bS.length, aSent: aS.length,
+    changed, added, removed, direction,
+    bLong, aLong, bFiller, aFiller,
+    bPassive, aPassive, bVague, aVague,
+    bFK, aFK, bWPS, aWPS,
+    bScore, aScore, deltaScore
+  };
+}
+function escapeHtml(s){
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function renderDiff(before, after){
+  const b = splitSents(before);
+  const a = splitSents(after);
+  const out = [];
+  const n = Math.max(b.length, a.length);
+  for(let i=0;i<n;i++){
+    const bs = b[i] || "";
+    const as = a[i] || "";
+    if(!as) continue;
+    if(bs.trim() !== as.trim()){
+      out.push('<span class="diffAdd">'+escapeHtml(as)+'</span>');
+    } else {
+      out.push(escapeHtml(as));
+    }
+  }
+  return out.join(" ");
+}
+
+function splitParasText(t){
+  return (t||"").replace(/\r/g,"").split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+}
+function renderDiffParagraphs(before, after){
+  const bP = splitParasText(before);
+  const aP = splitParasText(after);
+  const n = Math.max(bP.length, aP.length);
+  const out = [];
+  for(let i=0;i<n;i++){
+    const bp = bP[i] || "";
+    const ap = aP[i] || "";
+    if(!ap) continue;
+    out.push(`<p>${renderDiff(bp, ap)}</p>`);
+  }
+  return out.join("");
+}
+
+function renderPlainParagraphs(txt){
+  const safe = escapeHtml(txt || "");
+  // Split on blank lines (one or more)
+  const parts = safe.split(/\n\s*\n+/g).map(p => p.trim()).filter(Boolean);
+  if(!parts.length) return "";
+  return parts.map(p => `<p>${p.replace(/\n/g,"<br/>")}</p>`).join("");
+}
+
+function openModal(mode){
+  const m = $("baModal");
+  if(!m) return;
+
+  const grid = m.querySelector(".baGrid");
+  const beforeCol = grid?.children?.[0];
+  const afterCol = grid?.children?.[1];
+
+  if(mode === "after"){
+  $("baModeLabel").textContent = "Final Polish";
+  $("baSubLabel").textContent = "Polished version preview (changes highlighted) — Note: blue highlights show what Final Polish modified";
+  if(beforeCol) beforeCol.style.display = "none";
+  if(afterCol) afterCol.style.display = "";
+  // Make the After column use full width when showing Final Polish only
+  if(grid) grid.style.gridTemplateColumns = "1fr";
+} else {
+  $("baModeLabel").textContent = "Before / After";
+  $("baSubLabel").textContent = "Compare your draft to the polished version";
+  if(beforeCol) beforeCol.style.display = "";
+  if(afterCol) afterCol.style.display = "";
+  // Restore two-column layout
+  if(grid) grid.style.gridTemplateColumns = "1fr 1fr";
+}
+
+  const beforeBox = $("baBefore");
+  const afterBox = $("baAfter");
+  const summaryBox = $("baSummary");
+
+  // Always compute summary if we have both sides
+  const summary = summarizeChanges(beforeText || "", afterText || "");
+
+  if(mode === "after"){
+    // Keep highlighted diff view for the Polish preview mode
+    if(summaryBox){
+      const readinessBlock = (summary.bScore == null && summary.aScore == null) ? "" :
+        `<span class="sep">·</span><b>Readiness</b>: score ${summary.bScore ?? "—"} → ${summary.aScore ?? "—"}${(summary.deltaScore!=null && isFinite(summary.deltaScore))?` (${summary.deltaScore>=0?"+":""}${summary.deltaScore})`:""}`;
+      summaryBox.innerHTML = `<b>Polish summary</b>
+        <div class="row">
+          <span class="chip">Edits: ${summary.changed}</span>
+          <span class="chip">Sentences: ${summary.bSent} → ${summary.aSent}</span>
+          <span class="chip">Words: ${summary.bWords} → ${summary.aWords}${summary.bWords!==summary.aWords?` (${Math.abs(summary.aWords-summary.bWords)} ${summary.aWords>summary.bWords?"more":"fewer"} words)`:" (no change)"}</span>
+        </div>
+        <div class="metrics-line">
+          <b>Clarity</b>: long sentences ${summary.bLong} → ${summary.aLong}, filler words ${summary.bFiller} → ${summary.aFiller}
+          <span class="sep">·</span><b>Tone</b>: passive voice ${summary.bPassive} → ${summary.aPassive}, vague words ${summary.bVague} → ${summary.aVague}
+          <span class="sep">·</span><b>Readability</b>: FK grade ${summary.bFK ?? "—"} → ${summary.aFK ?? "—"}, words/sentence ${summary.bWPS ?? "—"} → ${summary.aWPS ?? "—"}
+          ${readinessBlock}
+        </div>`;
+    }
+    if(beforeBox) beforeBox.innerHTML = "";
+    if(afterBox){ afterBox.classList.add("baText"); afterBox.innerHTML = renderPlainParagraphs(afterText || ""); }
+  } else {
+    // Clean paragraph view for Before/After comparison (easy to read)
+    if(summaryBox){
+      summaryBox.innerHTML = `<b>What changed</b>
+        <div class="row">
+          <span class="chip">Sentences revised: ${summary.changed}</span>
+          <span class="chip">Added: ${summary.added}</span>
+          <span class="chip">Removed: ${summary.removed}</span>
+          <span class="chip">Words: ${summary.bWords} → ${summary.aWords} (${summary.direction})</span>
+        </div>
+        <div style="margin-top:8px; opacity:.95;">
+          <div>• <b>Clarity</b>: long sentences ${summary.bLong} → ${summary.aLong}, filler words ${summary.bFiller} → ${summary.aFiller}</div>
+          <div>• <b>Tone</b>: passive voice ${summary.bPassive} → ${summary.aPassive}, vague words ${summary.bVague} → ${summary.aVague}</div>
+          <div>• <b>Readability</b>: FK grade ${summary.bFK ?? "—"} → ${summary.aFK ?? "—"}, words/sentence ${summary.bWPS ?? "—"} → ${summary.aWPS ?? "—"}</div>
+          <div>• <b>Readiness</b>: score ${summary.bScore ?? "—"} → ${summary.aScore ?? "—"}${(summary.deltaScore!=null)?` (Δ ${summary.deltaScore>=0?"+":""}${summary.deltaScore})`:""}</div>
+        </div>`;
+    }
+    if(beforeBox){ beforeBox.classList.add("baText"); beforeBox.innerHTML = renderParagraphsHTML(beforeText || ""); }
+    if(afterBox){ afterBox.classList.add("baText"); afterBox.innerHTML = renderParagraphsHTML(afterText || ""); }
+    if(!afterText && afterBox){
+      afterBox.innerHTML = `<p style="margin:0;">Run Step 2 (Final Polish) to generate the polished version.</p>`;
+    }
+  }
+
+  // Actions
+  const copyBtn = $("copyAfter");
+  if(copyBtn){
+    copyBtn.textContent = "Copy polished text";
+    copyBtn.onclick = ()=>{
+      navigator.clipboard.writeText(afterText || "");
+      copyBtn.textContent = "Copied ✓";
+      setTimeout(()=>copyBtn.textContent="Copy polished text", 1200);
+    };
+  }
+
+  const applyBtn = $("applyAfter");
+  if(applyBtn){
+    applyBtn.disabled = false;
+    applyBtn.textContent = "Apply to draft";
+    applyBtn.onclick = ()=>{
+      const _scrollY = window.scrollY;
+
+      if(afterText){
+        setDraftText(afterText);
+        // Ensure student sees the polished essay in the main draft box (not hidden behind highlights)
+        const _draftEl = $("draft");
+        const _viewEl  = $("draftView");
+        if(_draftEl && _viewEl){
+          _viewEl.classList.add("hidden");
+          _draftEl.classList.remove("hidden");
+          try{ _draftEl.focus({preventScroll:true}); }catch(e){ try{ _draftEl.focus(); }catch(e2){} }
+        }
+        if(typeof lpToast === "function"){ lpToast("Final polish applied to draft ✓","ok",3000); }
+        // Keep the viewport anchored (don’t jump down the page)
+        try{ window.scrollTo({top:_scrollY, behavior:"instant"}); }catch(e){ window.scrollTo(0,_scrollY); }
+
+        if(typeof window.updateWordCount === "function"){ try{ window.updateWordCount(); }catch(e){} }
+      }
+      applyBtn.textContent = "Applied ✓";
+      applyBtn.disabled = true;
+      closeModal();
+    };
+  }
+
+  m.classList.add("show");
+  m.setAttribute("aria-hidden","false");
+}
+
+function closeModal(){
+  const m = $("baModal");
+  if(!m) return;
+  m.classList.remove("show");
+  m.setAttribute("aria-hidden","true");
+}
+
+
+window.closeModal = closeModal;
+function runStep2(){
+    if(!window.__lpStep1Ran){
+      alert("Please run Step 1: Strategy Review first before running Final Polish.");
+      return;
+    }
+    const text = getDraftText();
+    if(text.split(/\s+/).filter(Boolean).length < 20){
+      alert("Paste a longer essay (20+ words) to run Final Polish.");
+      return;
+    }
+    // Before = original essay from Step 1 time, After = polish of current draft (with replacements)
+    const originalText = window.__lpBeforeText || text;
+    beforeText = originalText; window.beforeText = originalText;
+    afterText = autoParagraphize(polish(text)); window.afterText = afterText;
+    if(window.lpEssayState){ window.lpEssayState.baselineBefore = originalText; window.lpEssayState.afterPolish = afterText; }
+    openModal("after"); // immediate popup as requested
+  }
+
+  // Wire Step2 button (force)
+  const b2 = $("btnStep2");
+  if(b2){
+    b2.addEventListener("click", (e)=>{ e.preventDefault(); runStep2(); }, true);
+  }
+
+  // Wire top Before/After button to split mode (if Step2 ran, otherwise run Step2 then split)
+  const topBA = $("btnBeforeAfter");
+  if(topBA){
+    topBA.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const text = getDraftText();
+      if(!afterText){
+        beforeText = text;
+        afterText = autoParagraphize(polish(text));
+      }
+      openModal("split");
+    }, true);
+  }
+
+  // Wire right-pane Before/After button (if exists)
+  const oba = $("openBeforeAfter2");
+  if(oba){
+    oba.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const text = getDraftText();
+      if(!afterText){
+        beforeText = text;
+        afterText = autoParagraphize(polish(text));
+      }
+      openModal("split");
+    }, true);
+  }
+
+  // Modal buttons
+  $("closeBAModal")?.addEventListener("click", closeModal);
+  $("baModal")?.addEventListener("click", (e)=>{ if(e.target === $("baModal")) closeModal(); });
+
+  $("copyAfter")?.addEventListener("click", ()=>{
+    if(!afterText) return;
+    navigator.clipboard.writeText(afterText);
+    const b = $("copyAfter");
+    b.textContent = "Copied";
+    setTimeout(()=>b.textContent="Copy After", 1200);
+  });
+
+  $("replaceDraft")?.addEventListener("click", ()=>{
+    if(!afterText) return;
+    setDraftText(afterText);
+    closeModal();
+    // Show textarea again (student can keep editing)
+    const dv = $("draftView");
+    const ta = $("draft");
+    if(dv && ta){
+      dv.classList.add("hidden");
+      ta.classList.remove("hidden");
+    }
+  });
+
+  /* ===== Apply rewrite from Issue Map (if Issue Map exists) =====
+     We attach event delegation to #issueList and support buttons with data-apply + data-copy.
+  */
+  function applySentenceRewrite(sidx, rewrite){
+    const text = getDraftText();
+    const sents = sentenceSplit(text);
+    if(sidx < 0 || sidx >= sents.length) return;
+    sents[sidx] = rewrite;
+    const updated = sents.join(" ");
+    setDraftText(updated);
+
+    // Rerun Step1 if runSmartReview exists to refresh highlights/map
+    if(typeof window.runSmartReview === "function"){
+      try{ window.runSmartReview(); } catch(e){ /* ignore */ }
+    }
+  }
+
+  const issueList = $("issueList");
+  if(issueList){
+    issueList.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const applyIdx = btn.getAttribute("data-apply");
+      if(applyIdx !== null){
+        const i = parseInt(applyIdx,10);
+        const rw = document.getElementById("rw_"+i)?.innerText || "";
+        const sidx = parseInt(btn.getAttribute("data-sidx"),10);
+        if(rw && Number.isFinite(sidx)) applySentenceRewrite(sidx, rw);
+      }
+    });
+  }
+
+  // Patch existing Issue Map rendering: add Apply buttons if missing
+  function patchIssueMapApplyButtons(){
+    const list = $("issueList");
+    if(!list) return;
+    list.querySelectorAll(".issueItem").forEach((item, i)=>{
+      const headLoc = item.querySelector(".issueLoc");
+      const sMatch = headLoc?.textContent?.match(/Sentence\s+(\d+)/i);
+      const sidx = sMatch ? (parseInt(sMatch[1],10)-1) : null;
+
+      const actions = item.querySelector(".issueActions");
+      if(actions && !actions.querySelector("[data-apply]")){
+        const b = document.createElement("button");
+        b.className = "miniBtn";
+        b.type = "button";
+        b.textContent = "Apply";
+        if(sidx !== null){
+          b.setAttribute("data-apply", String(i));
+          b.setAttribute("data-sidx", String(sidx));
+        }
+        actions.appendChild(b);
+      }
+    });
+  }
+
+  // run after any Step1 execution
+  const oldSmart = window.runSmartReview;
+  if(typeof oldSmart === "function"){
+    window.runSmartReview = function(){
+      const r = oldSmart.apply(this, arguments);
+      setTimeout(patchIssueMapApplyButtons, 50);
+      return r;
+    };
+  } else {
+    // if step1 not present, still patch
+    setTimeout(patchIssueMapApplyButtons, 300);
+  }
+})();
+</script>
+<script>
+/* ===== LaunchPath Coach Engine v1 (OFFLINE DEMO, student-safe) ===== */
+(function(){
+  const $ = (id)=>document.getElementById(id);
+
+  function getText(){ return ($("draft")?.value || "").trim(); }
+  function words(text){ return (text||"").trim().split(/\s+/).filter(Boolean); }
+  function sentences(text){
+    return (text||"").replace(/\s+/g," ").split(/(?<=[\.\!\?])\s+(?=[A-Z0-9“"'])/).map(s=>s.trim()).filter(Boolean);
+  }
+  function paragraphs(text){
+    const ps = (text||"").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+    return ps.length ? ps : [text.trim()];
+  }
+  function escapeHtml(str){
+    return String(str||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+
+  const CLICHES = ["ever since i was","since i was young","in conclusion","overall","throughout my life","at the end of the day","it taught me","i learned that"];
+  const FILLERS = ["very","really","just","basically","literally","actually","kind of","sort of","a lot"];
+  const VAGUE = ["good","great","nice","amazing","awesome","interesting","important","thing","things","stuff"];
+  const PASSIVE = /\b(was|were|is|are|been|being)\b\s+\b\w+(ed|en)\b/i;
+
+  function computeScore(text){
+    const w = words(text).length;
+    const sents = sentences(text);
+    const ps = paragraphs(text);
+
+    const hasBreaks = ps.length >= 3;
+    const hasConclusion = /in conclusion|looking back|ultimately|as a result/i.test(text);
+    const structureBase = 18 + (hasBreaks?4:0) + (hasConclusion?3:0) + (sents.length>=8?2:0);
+
+    const longSents = sents.filter(s=>words(s).length>=28).length;
+    const clarityBase = 22 - longSents*2;
+
+    const passiveCount = sents.filter(s=>PASSIVE.test(s)).length;
+    const voiceBase = 22 - passiveCount*2;
+
+    const vagueCount = (text.toLowerCase().match(new RegExp("\\b(" + VAGUE.join("|") + ")\\b","g"))||[]).length;
+    const numbers = (text.match(/\b\d+(\.\d+)?\b/g)||[]).length;
+    const specificityBase = 18 + Math.min(5,numbers) - vagueCount;
+
+    const structure = clamp(structureBase, 0, 25);
+    const clarity = clamp(clarityBase, 0, 25);
+    const voice = clamp(voiceBase, 0, 25);
+    const specificity = clamp(specificityBase, 0, 25);
+    const total = clamp(structure+clarity+voice+specificity, 0, 100);
+
+    return {structure, clarity, voice, specificity, total, w, longSents, passiveCount, vagueCount};
+  }
+
+  function setBar(id, val, max){
+    const el = $(id);
+    if(!el) return;
+    const pct = clamp((val/(max||100))*100,0,100);
+    el.style.width = pct + "%";
+  }
+
+  function makePlan(score){
+    const plan = [];
+    const low = (k)=> score[k] < 18;
+
+    if(low("structure")){
+      plan.push({k:"Structure", t:"Clarify your story arc", d:"Add a clear hook, a specific challenge, and a reflection that connects to who you are now."});
+    }
+    if(score.longSents >= 2){
+      plan.push({k:"Clarity", t:"Split long sentences", d:`You have ${score.longSents} long sentence(s). Break them into two and lead with the main action.`});
+    }
+    if(score.passiveCount >= 2){
+      plan.push({k:"Voice", t:"Rewrite passive voice", d:"Convert passive phrases to active voice (who did what?) to sound more confident."});
+    }
+    if(score.vagueCount >= 2){
+      plan.push({k:"Specificity", t:"Replace vague words", d:"Swap vague words for concrete details: what you did, what changed, and the result."});
+    }
+    plan.push({k:"Coach", t:"Add proof of growth", d:"For each lesson learned, add a quick example: what you did next and what changed."});
+    return plan.slice(0,5);
+  }
+
+  function makeQuestions(text){
+    const qs = [];
+    qs.push("What is the single moment you want the reader to remember after finishing your essay?");
+    qs.push("What did you do (actions) that proves your values—beyond what you say you learned?");
+    qs.push("What specific obstacle did you face, and what choice did you make when it mattered?");
+    if(!(text.match(/\b\d+\b/g)||[]).length){
+      qs.push("Can you include one concrete detail (a number, timeframe, or measurable result) to make it more believable?");
+    }
+    return qs.slice(0,6);
+  }
+
+  function suggestOutline(){
+    return [
+      {t:"Hook (1–3 sentences)", d:"Start with a specific moment: place, action, and stakes."},
+      {t:"Context", d:"Briefly explain what led to the moment (no resume-style list)."},
+      {t:"Challenge", d:"Show the obstacle or tension—what made this hard or meaningful?"},
+      {t:"Action + Result", d:"What did you do? What happened? Include one concrete detail."},
+      {t:"Reflection", d:"What changed in your thinking/behavior? Connect it to future goals."},
+      {t:"Closing (1–2 sentences)", d:"End with a forward-looking line, not a generic conclusion."}
+    ];
+  }
+
+  function sentenceSuggestions(text){
+    const sents = sentences(text);
+    const out = [];
+    sents.forEach((s,i)=>{
+      if(out.length>=6) return;
+      const low = s.toLowerCase();
+
+      if(CLICHES.some(c=>low.includes(c))){
+        out.push({i, type:"Voice", before:s, after:s.replace(/in conclusion,?/i,"Looking back,").replace(/overall,?/i,"Ultimately,")});
+        return;
+      }
+      if(FILLERS.some(f=>new RegExp("\\b"+f+"\\b","i").test(s))){
+        out.push({i, type:"Clarity", before:s, after:s.replace(new RegExp("\\b(" + FILLERS.join("|") + ")\\b","gi"),"").replace(/\s{2,}/g," ").trim()});
+        return;
+      }
+      if(VAGUE.some(v=>new RegExp("\\b"+v+"\\b","i").test(s))){
+        out.push({i, type:"Specificity", before:s, after:s.replace(/\b(things|stuff)\b/gi,"specific outcomes").replace(/\b(good|great|nice|amazing|awesome)\b/gi,"strong")});
+        return;
+      }
+      if(words(s).length>=30){
+        const parts = s.split(/,\s+| and /);
+        const after = parts.length>=2 ? (parts[0].trim()+". "+parts.slice(1).join(" ").trim()) : s;
+        out.push({i, type:"Clarity", before:s, after});
+        return;
+      }
+      if(PASSIVE.test(s)){
+        out.push({i, type:"Voice", before:s, after:s.replace(/\bwas\b|\bwere\b|\bbeen\b|\bbeing\b/gi,"").replace(/\s{2,}/g," ").trim()});
+        return;
+      }
+    });
+    return out;
+  }
+
+  function renderCoach(text){
+    const score = computeScore(text);
+
+    // overall
+    const scoreVal = $("scoreVal");
+    const fill = $("coachBarFill");
+    if(scoreVal) scoreVal.textContent = String(score.total);
+    if(fill) fill.style.width = score.total + "%";
+    // Capture the real score only on first Step 1 run (not on re-runs after Replace Sentence)
+    if(!window.__lpBeforeScore) {
+      window.__lpBeforeScore = score.total;
+    }
+
+    // scorecard
+    $("scStructureVal").textContent = score.structure;
+    $("scClarityVal").textContent = score.clarity;
+    $("scVoiceVal").textContent = score.voice;
+    $("scSpecificityVal").textContent = score.specificity;
+    setBar("scStructure", score.structure, 25);
+    setBar("scClarity", score.clarity, 25);
+    setBar("scVoice", score.voice, 25);
+    setBar("scSpecificity", score.specificity, 25);
+
+    const oneLine = $("coachOneLine");
+    if(oneLine) oneLine.innerHTML = `Readiness <b>${score.total}/100</b> (target 80+). Word count: <b>${score.w}</b>.`;
+
+    // plan
+    const planRoot = $("coachPlan");
+    if(planRoot){
+      planRoot.innerHTML = "";
+      makePlan(score).forEach((p,idx)=>{
+        const div = document.createElement("div");
+        div.className = "coachItem";
+        div.innerHTML = `<div class="k">${idx+1}. ${p.k}</div><div class="t">${p.t}</div><div class="d">${p.d}</div>`;
+        planRoot.appendChild(div);
+      });
+    }
+
+    // questions
+    const qRoot = $("coachQuestions");
+    if(qRoot){
+      qRoot.innerHTML = "";
+      makeQuestions(text).forEach((q)=>{
+        const div = document.createElement("div");
+        div.className = "coachItem";
+        div.innerHTML = `<div class="k">Question</div><div class="t">${q}</div>`;
+        qRoot.appendChild(div);
+      });
+    }
+
+    // outline
+    const oRoot = $("coachOutline");
+    if(oRoot){
+      oRoot.innerHTML = "";
+      suggestOutline().forEach((o)=>{
+        const div = document.createElement("div");
+        div.className = "coachItem";
+        div.innerHTML = `<div class="k">Outline</div><div class="t">${o.t}</div><div class="d">${o.d}</div>`;
+        oRoot.appendChild(div);
+      });
+    }
+
+    // sentence suggestions
+    const sRoot = $("coachSentenceList");
+    if(sRoot){
+      sRoot.innerHTML = "";
+      const sugg = sentenceSuggestions(text);
+      if(!sugg.length){
+        const div = document.createElement("div");
+        div.style.color = "rgba(255,255,255,.62)";
+        div.textContent = "No sentence suggestions detected. Nice work — run Step 1 again after edits.";
+        sRoot.appendChild(div);
+      } else {
+        sugg.forEach((s)=>{
+          const card = document.createElement("div");
+          card.className = "suggCard";
+          card.dataset.after = s.after;
+          card.dataset.idx = String(s.i);
+          card.innerHTML = `
+            <div class="meta">${s.type} • Sentence ${s.i+1}</div>
+            <div class="before"><b>Before:</b> ${escapeHtml(s.before)}</div>
+            <div class="after"><b>Suggestion:</b> ${escapeHtml(s.after)}</div>
+            <div class="actions">
+              <button type="button" class="miniBtn primary" data-apply-sent="1">Apply sentence</button>
+              <button type="button" class="miniBtn" data-copy-sent="1">Copy suggestion</button>
+            </div>`;
+          sRoot.appendChild(card);
+        });
+      }
+    }
+  }
+
+  // Apply/copy handlers (event delegation)
+  document.addEventListener("click",(e)=>{
+    const jumpBtn = e.target.closest("[data-jump-sidx]");
+    const copyBtn = e.target.closest("[data-copy-rewrite]");
+    const applyBtn = e.target.closest("[data-apply-rewrite]");
+
+    if(jumpBtn){
+      const sidx = parseInt(jumpBtn.getAttribute("data-jump-sidx"),10);
+      const mark = document.querySelector(`mark[data-sidx="${sidx}"]`);
+      if(mark){
+        mark.scrollIntoView({behavior:"smooth", block:"center"});
+        mark.classList.add("flash");
+        setTimeout(()=>mark.classList.remove("flash"), 800);
+      }
+      return;
+    }
+
+    if(copyBtn){
+      const card = e.target.closest(".suggCard");
+      const txt = card?.dataset?.rewrite || "";
+      navigator.clipboard.writeText(txt);
+      copyBtn.textContent = "Copied ✓";
+      setTimeout(()=>copyBtn.textContent="Copy suggestion", 1200);
+      return;
+    }
+
+    if(applyBtn){
+      const card = e.target.closest(".suggCard");
+      const sidx = parseInt(card?.dataset?.sidx||"-1",10);
+      const rw = card?.dataset?.rewrite || "";
+      if(Number.isFinite(sidx) && sidx>=0 && rw && typeof window.lpReplaceSentenceAtIndex === "function"){
+        window.lpReplaceSentenceAtIndex(sidx, rw);
+      } else if(Number.isFinite(sidx) && sidx>=0 && rw){
+        // fallback: direct textarea rewrite
+        const ta = $("draft");
+        if(ta){
+          const sents = sentences(getText());
+          if(sidx < sents.length){ sents[sidx] = rw; ta.value = sents.join(" "); }
+        }
+      }
+      if(typeof window.updateWordCount === "function"){ try{ window.updateWordCount(); }catch(e){} }
+      applyBtn.textContent = "Applied ✓";
+      applyBtn.disabled = true;
+      return;
+    }
+  });
+
+  // Run on Step 1 click (capture) + live typing
+  const step1 = $("btnStep1");
+  if(step1){
+    step1.addEventListener("click", ()=>{
+      const text = getText();
+      if(words(text).length < 20) return;
+      renderCoach(text);
+    }, true);
+  }
+
+  const ta = $("draft");
+  if(ta){
+    let tmr = null;
+    ta.addEventListener("input", ()=>{
+      if(tmr) clearTimeout(tmr);
+      tmr = setTimeout(()=>{
+        const text = getText();
+        if(words(text).length >= 20) renderCoach(text);
+      }, 250);
+    });
+  }
+
+  // ----- Sync Sentence Suggestions from Issue Map (Amber/Warning) -----
+  function severityLabel(sev){
+    if(sev>=3) return "Warning";
+    if(sev===2) return "Amber";
+    return "Minor";
+  }
+  function severityClass(sev){
+    if(sev>=3) return "w";
+    if(sev===2) return "c";
+    return "p";
+  }
+
+  window.lpCoachSyncFromIssues = function(items){
+    const sRoot = document.getElementById("coachSentenceList");
+    if(!sRoot) return;
+
+    const list = (items||[]).filter(it => (it.sev||0) >= 2)
+      .slice()
+      .sort((a,b)=> (b.sev||0)-(a.sev||0) || (a.sidx||0)-(b.sidx||0))
+      .slice(0, 8);
+
+    sRoot.innerHTML = "";
+    if(!list.length){
+      const div = document.createElement("div");
+      div.style.color = "rgba(255,255,255,.62)";
+      div.textContent = "No Amber/Warning sentences detected. Nice work — run Step 1 again after edits.";
+      sRoot.appendChild(div);
+      return;
+    }
+
+    list.forEach((it)=>{
+      const sev = it.sev||0;
+      const card = document.createElement("div");
+      card.className = "suggCard";
+      card.dataset.sidx = String(it.sidx ?? -1);
+      card.dataset.rewrite = it.rewrite || "";
+      card.innerHTML = `
+        <div class="meta">${severityLabel(sev)} • ${escapeHtml(it.type||"Fix")} • Sentence ${(it.sidx??0)+1}</div>
+        <div class="before"><b>Issue:</b> ${escapeHtml(it.why||"")}</div>
+        <div class="after"><b>Suggestion:</b> ${escapeHtml((it.rewrite||it.sent||"").trim())}</div>
+        <div class="actions">
+          <button type="button" class="miniBtn primary" data-jump-sidx="${it.sidx}">Jump to sentence</button>
+          <button type="button" class="miniBtn" data-copy-rewrite="${it.sidx}">Copy suggestion</button>
+          <button type="button" class="miniBtn" data-apply-rewrite="${it.sidx}">Apply suggestion</button>
+        </div>
+      `;
+      sRoot.appendChild(card);
+    });
+  };
+
+})();
+</script>
+<!-- sentModal inserted -->
+<script>
+/* ===== Tabs + Issue-to-Sentence Coach (v5) ===== */
+(function(){
+  const panel = document.querySelector('section[aria-label="LP Coaching Panel"]');
+  const tabs = document.getElementById("coachTabs");
+  if(!panel || !tabs) return;
+
+  function setTab(key){
+    tabs.querySelectorAll(".coachTab").forEach(b=>{
+      b.classList.toggle("active", b.dataset.tab === key);
+    });
+    panel.querySelectorAll(".coachBlock").forEach(el=>{
+      const t = el.getAttribute("data-tab") || "overview";
+      el.style.display = (t === key) ? "" : "none";
+    });
+  }
+  
+  window.lpSetCoachTab = setTab;
+  setTab("overview");
+
+  // Expose + control Issue Pills (appear after Step 1)
+  window.updateIssuePills = function(items){
+    const pills = document.getElementById("issuePills");
+    if(!pills) return;
+    const all = Array.isArray(items)? items : [];
+    const warn = all.filter(x => (x.sev||0) >= 3);
+    const amber = all.filter(x => (x.sev||0) === 2);
+    const minor = all.filter(x => (x.sev||0) === 1);
+
+    document.getElementById("pillAll").textContent = String(all.length);
+    document.getElementById("pillWarn").textContent = String(warn.length);
+    document.getElementById("pillAmber").textContent = String(amber.length);
+    document.getElementById("pillMinor").textContent = String(minor.length);
+
+    // show pills only after Step 1 has produced issues
+    pills.classList.remove("hidden");
+
+    // default filter = all
+    setPillActive("all");
+  };
+
+  function setPillActive(key){
+    const pills = document.getElementById("issuePills");
+    if(!pills) return;
+    pills.querySelectorAll(".pill").forEach(b=>{
+      b.classList.toggle("active", b.dataset.filter === key);
+    });
+    // If user is on Issues tab, re-render list
+    const all = Array.isArray(window.lpAllIssues) ? window.lpAllIssues : [];
+    let filtered = all;
+    if(key==="warn") filtered = all.filter(x => (x.sev||0) >= 3);
+    if(key==="amber") filtered = all.filter(x => (x.sev||0) === 2);
+    if(key==="minor") filtered = all.filter(x => (x.sev||0) === 1);
+
+    // Only affects Issues list (and counts remain from full list)
+    if(document.querySelector('.coachTab.active')?.dataset?.tab === "issues"){
+      if(typeof window.renderIssueList === "function"){
+        try{ window.renderIssueList(filtered); }catch(e){}
+      }
+    }
+    // Keep last list for sentence clicks
+    window.lpLastIssues = filtered;
+  }
+
+  document.addEventListener("click",(e)=>{
+    const pill = e.target.closest("#issuePills .pill");
+    if(!pill) return;
+    setPillActive(pill.dataset.filter || "all");
+  });
+
+tabs.addEventListener("click",(e)=>{
+    const btn = e.target.closest(".coachTab");
+    if(!btn) return;
+    setTab(btn.dataset.tab);
+  });
+
+  function openSentenceCoach(issue){
+    const m = document.getElementById("sentModal");
+    if(!m) return;
+
+    const sidx = Number.isFinite(issue.sidx) ? issue.sidx : -1;
+    const sev = issue.sev || 0;
+    const type = issue.type || "Fix";
+    const why = issue.why || "";
+    const before = issue.sent || "";
+    const after = issue.rewrite || "";
+
+    const meta = document.getElementById("sentMeta");
+    const b = document.getElementById("sentBefore");
+    const a = document.getElementById("sentAfter");
+
+    if(meta) meta.textContent = `${sev>=3 ? "Warning" : "Amber"} • ${type} • Sentence ${sidx+1}${why ? " • " + why : ""}`;
+    if(b) b.textContent = before;
+    if(a) a.textContent = after || "(No suggestion text provided.)";
+
+    const copyBtn = document.getElementById("copySentAfter");
+    const applyBtn = document.getElementById("applySentAfter");
+    const jumpBtn = document.getElementById("jumpSent");
+
+    if(copyBtn){
+      copyBtn.textContent = "Copy suggestion";
+      copyBtn.onclick = ()=>{
+        navigator.clipboard.writeText(after||"");
+        copyBtn.textContent="Copied ✓";
+        setTimeout(()=>copyBtn.textContent="Copy suggestion",1200);
+      };
+    }
+    if(applyBtn){
+      applyBtn.disabled = false;
+      applyBtn.textContent = "Apply to draft";
+      applyBtn.onclick = ()=>{
+        if(after && typeof window.lpReplaceSentenceAtIndex === "function"){
+          window.lpReplaceSentenceAtIndex(sidx, after);
+        }
+        applyBtn.textContent="Applied ✓";
+        applyBtn.disabled=true;
+      };
+    }
+    if(jumpBtn){
+      jumpBtn.onclick = ()=>{
+        const mark = document.querySelector(`mark[data-sidx="${sidx}"]`);
+        if(mark){
+          mark.scrollIntoView({behavior:"smooth", block:"center"});
+          mark.classList.add("flash");
+          setTimeout(()=>mark.classList.remove("flash"), 800);
+        }
+      };
+    }
+
+    setTab("sentences");
+    m.classList.add("show");
+    m.setAttribute("aria-hidden","false");
+  }
+
+  function closeSentenceCoach(){
+    const m = document.getElementById("sentModal");
+    if(!m) return;
+    m.classList.remove("show");
+    m.setAttribute("aria-hidden","true");
+  }
+  document.getElementById("closeSentModal")?.addEventListener("click", closeSentenceCoach);
+  document.getElementById("sentModal")?.addEventListener("click",(e)=>{ if(e.target === document.getElementById("sentModal")) closeSentenceCoach(); });
+  document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeSentenceCoach(); });
+
+  document.addEventListener("click",(e)=>{
+    const card = e.target.closest(".issueCard");
+    if(!card) return;
+
+    const txt = card.textContent || "";
+    const m = txt.match(/Sentence\s+(\d+)/i);
+    const sidx = m ? (parseInt(m[1],10)-1) : -1;
+
+    const items = Array.isArray(window.lpAllIssues) ? window.lpAllIssues : (Array.isArray(window.lpLastIssues) ? window.lpLastIssues : []);
+    const issue = items.find(it => it.sidx === sidx) || null;
+    if(!issue) return;
+    if((issue.sev||0) < 2) return;
+
+    openSentenceCoach(issue);
+  });
+})();
+</script>
+<script>
+/* ===== Word Count (robust) ===== */
+(function(){
+  if(typeof window.updateWordCount === "function") return;
+  const $ = (id)=>document.getElementById(id);
+  function countWords(s){
+    return (s||"").trim().split(/\s+/).filter(Boolean).length;
+  }
+  window.updateWordCount = function(){
+    const ta = $("draft");
+    const out = $("wordCount");
+    if(!ta || !out) return;
+    out.textContent = String(countWords(ta.value));
+  };
+  const ta = $("draft");
+  if(ta){
+    ta.addEventListener("input", ()=>window.updateWordCount());
+  }
+  window.updateWordCount();
+})();
+</script>
+<script>
+/* ===== Pill Filters: force Issues tab + render filtered list (v15) ===== */
+(function(){
+  const pills = document.getElementById("issuePills");
+  if(!pills) return;
+
+  function setActive(btn){
+    pills.querySelectorAll(".pill").forEach(b=>b.classList.toggle("active", b===btn));
+  }
+
+  function filterItems(key){
+    const all = Array.isArray(window.lpAllIssues) ? window.lpAllIssues : (Array.isArray(window.lpLastIssues) ? window.lpLastIssues : []);
+    if(key==="warn") return all.filter(x => (x.sev||0) >= 3);
+    if(key==="amber") return all.filter(x => (x.sev||0) === 2);
+    if(key==="minor") return all.filter(x => (x.sev||0) === 1);
+    return all;
+  }
+
+  pills.addEventListener("click", (e)=>{
+    const btn = e.target.closest(".pill");
+    if(!btn) return;
+
+    const key = btn.dataset.filter || "all";
+    setActive(btn);
+
+    try{ if(typeof window.lpSetCoachTab === "function") window.lpSetCoachTab("issues"); }catch(err){}
+
+    const filtered = filterItems(key);
+    window.lpLastIssues = filtered;
+
+    try{ if(typeof window.renderIssueList === "function") window.renderIssueList(filtered); }catch(err){}
+
+    const issueMap = document.querySelector('[aria-label="LP Issue Map (Top Fixes)"], [aria-label="LP Issue Map"]');
+    if(issueMap){
+      try{ issueMap.scrollIntoView({behavior:"smooth", block:"start"}); }catch(err){}
+    }
+  });
+})();
+</script>
+<div aria-hidden="true" class="baModal" id="baModal">
+<div aria-label="Final Polish preview" aria-modal="true" class="baCard" role="dialog">
+<div class="baTop">
+<div>
+<div class="baTitle" id="baModeLabel">Before / After</div>
+<div class="baSub" id="baSubLabel">Polished version preview</div>
+<div class="baSummary" id="baSummary"></div>
+</div>
+<button class="miniBtn" id="closeBAModal" title="Close" type="button">Close</button></div>
+<div class="baGrid">
+<div>
+<div class="baLabel">Before</div>
+<div class="baBox" id="baBefore"></div>
+</div>
+<div>
+<div class="baLabel">After (Final Polish)</div>
+<div class="baBox" id="baAfter"></div>
+</div>
+</div>
+<div class="baActions">
+<button class="miniBtn" id="copyAfter" type="button">Copy polished text</button>
+<button class="miniBtn primary" id="applyAfter" type="button">Apply to draft</button>
+</div>
+</div>
+</div>
+<script>
+/* ===== Step 2 Modal Close Fix (v19) ===== */
+(function(){
+  function hardClose(){
+    const modal = document.getElementById("baModal");
+    if(!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+  }
+  function safeClose(){
+    try{
+      if(typeof closeModal === "function") closeModal();
+      else hardClose();
+    }catch(e){ hardClose(); }
+  }
+  function wire(){
+    const modal = document.getElementById("baModal");
+    const closeBtn = document.getElementById("closeBAModal");
+    if(!modal || !closeBtn) return;
+
+    closeBtn.addEventListener("click", safeClose);
+    modal.addEventListener("click", (e)=>{ if(e.target === modal) safeClose(); });
+    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") safeClose(); });
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire);
+  else wire();
+})();
+
+/* === Submission Ready indicator (only appears after Apply to Draft AND criteria pass) === */
+function lpGetNumberFromText(t){
+  const m = String(t||"").match(/-?\d+(\.\d+)?/);
+  return m ? Number(m[0]) : NaN;
+}
+function lpGetBadgeEl(){ return document.getElementById("submissionReadyPill"); }
+
+function lpGetWarningsCount(){
+  // Try state first if available
+  try{
+    if (window.lpState && typeof window.lpState.warningCount === "number") return window.lpState.warningCount;
+    if (window.lpState && Array.isArray(window.lpState.issues)){
+      return window.lpState.issues.filter(x => String(x.severity||"").toLowerCase()==="warning").length;
+    }
+  }catch(e){}
+  // Fallback: parse warnings pill text "Warnings ( X )"
+  const pills = Array.from(document.querySelectorAll("button, .pill, .tag, .issuePill"));
+  for (const el of pills){
+    const txt = (el.textContent||"").trim();
+    if (/^Warnings\s*\(/i.test(txt)){
+      const n = lpGetNumberFromText(txt);
+      if (!Number.isNaN(n)) return n;
+    }
+  }
+  return 0;
+}
+
+function lpGetScore(){
+  // Look for "NN/100" in coaching panel
+  const el = document.querySelector(".lpScore, .scoreValue, [data-score], .coachingScore");
+  if (el && el.dataset && el.dataset.score) return Number(el.dataset.score);
+  const txt = (document.body.textContent||"").match(/\b(\d{1,3})\s*\/\s*100\b/);
+  return txt ? Number(txt[1]) : NaN;
+}
+
+function lpGetBaselineScore(){
+  try{
+    if (window.lpState && typeof window.lpState.baselineScore === "number") return window.lpState.baselineScore;
+    if (typeof window.__baselineScore === "number") return window.__baselineScore;
+  }catch(e){}
+  return NaN;
+}
+
+function lpGetConcisionOk(){
+  // If no metrics exist, don't block.
+  try{
+    if (window.lpState && typeof window.lpState.concisionOk === "boolean") return window.lpState.concisionOk;
+  }catch(e){}
+  return true;
+}
+
+function lpHasPolishOutput(){
+  try{
+    if (window.lpState && typeof window.lpState.afterPolish === "string" && window.lpState.afterPolish.trim().length>0) return true;
+    if (typeof window.__afterPolishText === "string" && window.__afterPolishText.trim().length>0) return true;
+  }catch(e){}
+  // Fallback: see if After column has content (Before/After view stores it)
+  const afterBox = document.querySelector("#afterEssay, #afterText, .afterEssay, .afterColumn textarea, .afterColumn pre");
+  if (afterBox){
+    const t = (afterBox.value || afterBox.textContent || "").trim();
+    if (t.length>0) return true;
+  }
+  return false;
+}
+
+function lpShowSubmissionReadyIfPassed(){
+  const pill = lpGetBadgeEl();
+  if (!pill) return;
+
+  // Must be after apply-to-draft
+  if (!(window.lpState && window.lpState.appliedToDraft === true) && window.__appliedToDraft !== true){
+    pill.classList.add("hidden");
+    return;
+  }
+
+  const hasPolish = lpHasPolishOutput();
+  const warnings = lpGetWarningsCount();
+  const baseline = lpGetBaselineScore();
+  const nowScore = lpGetScore();
+  const deltaOk = (!Number.isNaN(baseline) && !Number.isNaN(nowScore)) ? ((nowScore - baseline) >= 2) : true;
+  const concisionOk = lpGetConcisionOk();
+
+  const passed = hasPolish && warnings === 0 && deltaOk && concisionOk;
+
+  if (passed){
+    pill.classList.remove("hidden");
+  }else{
+    pill.classList.add("hidden");
+  }
+}
+
+
+const LP_SAMPLE_ESSAYS = [{"title": "Turning Last Place into Progress", "meta": "Perseverance · sports · growth mindset", "text": "I used to think progress had to be visible to count. On my first cross‑country race, it was visible in the worst way: I finished last.\n\nThe next week, I wrote a simple goal on my hand—“finish stronger.” It wasn’t a time goal; it was a promise to keep moving when it hurt. Over the season I learned improvement is quiet: one more hill, one better breath, one choice to return after a bad day.\n\nBy the end, I wasn’t the fastest, but I became the most consistent. I led warm‑ups for new runners and built a simple tracker so our team could see patterns in effort and recovery. When a freshman wanted to quit, I ran beside him and counted breaths until the mile was over.\n\nThat mindset followed me into school: break big problems into repeats, revise drafts instead of abandoning them, and measure progress by the work I’m willing to do. I’m applying to college with the same approach—show up, learn, and finish stronger than I started."}, {"title": "The Pantry Receipt", "meta": "Community · responsibility · reflection", "text": "At the food pantry, I learned to read stories in small details—like receipts. Each donation came with an invisible timeline: a family budgeting carefully, a student grabbing something quick, a neighbor helping quietly.\n\nMy first day, I sorted cans by label and slowed the line. An older volunteer corrected me: “People don’t eat brands. They eat dinners.” So we reorganized by meal—soups together, breakfast together—so families could leave with options, not confusion.\n\nI began translating for Arabic‑speaking visitors and tracking which items ran out fastest so we could adjust requests. I also learned that help isn’t always a speech; sometimes it’s moving quickly, making eye contact, and letting someone feel seen.\n\nServing weekly taught me leadership is practical: notice what’s missing, improve the system, and do it without needing credit. That’s the community I want in college."}, {"title": "Two Languages, One Voice", "meta": "Identity · communication · adaptation", "text": "At home I speak Arabic with my grandparents and English with my little brother. Switching languages became so normal that I didn’t notice I was also switching confidence.\n\nIn middle school I rehearsed answers in my head and replaced them with silence, afraid my words would land wrong. Debate changed that. My coach made us rewrite arguments in simpler language until the logic became clear. For the first time, I felt clarity could be learned.\n\nI practiced everywhere—explaining homework to my brother, translating announcements for my grandparents, asking teachers questions even when my voice shook. I realized confidence isn’t the absence of mistakes; it’s the willingness to be understood.\n\nNow I see bilingual life as training: listen for meaning, adjust to audiences, and connect people who are speaking past each other. In college, I want to keep building that bridge."}, {"title": "A Repair, Not a Replacement", "meta": "Problem‑solving · initiative · engineering mindset", "text": "When our family laptop stopped charging, my first instinct was to replace it. My second was to ask why a simple port could decide whether a whole device was useful.\n\nWith a borrowed toolkit and a tutorial, I opened the case expecting dramatic damage. The problem was small: a loose connector and dust packed into the port. A careful cleaning and reseat brought it back.\n\nThat repair reshaped how I work. Big failures are often collections of small ignored issues. In robotics, we stopped changing everything at once and started testing incrementally, documenting runs, and isolating variables.\n\nBy competition season, we became the team that fixed problems quickly—not because we were smarter, but because we were systematic. That’s the mindset I want to bring to college labs and teams."}, {"title": "The Quiet Confidence of Teaching", "meta": "Mentoring · growth · impact", "text": "The first time I tutored algebra, I arrived with a perfect plan and left with a messy one. My student didn’t need more examples; she needed proof she could understand.\n\nWe started by finding one part she recognized—then built from there. Each session focused on a small win: rewriting problems in her own words, checking work like a detective, and celebrating progress before moving on.\n\nOver time her questions changed from “What do I do?” to “Does this make sense?” That shift mattered more than any single grade.\n\nTutoring taught me communication is a skill, not a personality trait. When I struggle now, I look for the first part I recognize—and begin from there. In college, I want to keep building communities where learning feels possible."}];
+
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  const link = $("viewSamples");
+  const panel = $("samplesPanel");
+  const tiles = $("samplesTiles");
+  const title = $("samplesPreviewTitle");
+  const meta = $("samplesPreviewMeta");
+  const text = $("samplesPreviewText");
+  const closeBtn = $("samplesCloseBtn");
+  const copyBtn = $("samplesCopyBtn");
+  if(!link || !panel || !tiles || !title || !meta || !text) return;
+
+  let selectedIdx = -1;
+
+  function renderTiles(){
+    tiles.innerHTML = "";
+    LP_SAMPLE_ESSAYS.forEach((s, i)=>{
+      const tile = document.createElement("div");
+      tile.className = "sampleTile";
+      tile.innerHTML = '<div class="sampleTileTitle"></div><div class="sampleTileSub"></div>';
+      tile.querySelector(".sampleTileTitle").textContent = s.title;
+      tile.querySelector(".sampleTileSub").textContent = s.meta;
+      tile.addEventListener("click", ()=>select(i));
+      tiles.appendChild(tile);
+    });
+  }
+
+  function select(i){
+    const s = LP_SAMPLE_ESSAYS[i];
+    if(!s) return;
+    selectedIdx = i;
+    Array.from(tiles.children).forEach((el, idx)=>{
+      if(idx===i) el.classList.add("active"); else el.classList.remove("active");
+    });
+    title.textContent = s.title;
+    meta.textContent = s.meta;
+    text.textContent = s.text;
+  }
+
+  function openPanel(){
+    panel.classList.remove("hidden");
+    if(selectedIdx === -1) select(0);
+    // keep page stable; no scrolling
+  }
+  function closePanel(){
+    panel.classList.add("hidden");
+  }
+
+  link.addEventListener("click", (e)=>{ e.preventDefault(); openPanel(); });
+  if(closeBtn) closeBtn.addEventListener("click", (e)=>{ e.preventDefault(); closePanel(); });
+
+  if(copyBtn){
+    copyBtn.addEventListener("click", ()=>{
+      const s = LP_SAMPLE_ESSAYS[selectedIdx] || null;
+      const payload = (s && s.text) ? s.text : "";
+      if(!payload) return;
+      const doToast = (msg)=>{ try{ if(typeof lpToast==="function") lpToast(msg,"ok",2000);}catch(e){} };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(payload).then(()=>doToast("Copied sample ✓")).catch(()=>fallbackCopy(payload, doToast));
+      }else{
+        fallbackCopy(payload, doToast);
+      }
+    });
+  }
+
+  function fallbackCopy(payload, doToast){
+    const ta = document.createElement("textarea");
+    ta.value = payload;
+    ta.style.position="fixed"; ta.style.left="-9999px"; ta.style.top="0";
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try{ document.execCommand("copy"); doToast("Copied sample ✓"); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  renderTiles();
+})();
+
+</script>
+<script>
+
+/* ===== Submission Ready (non-invasive patch) =====
+   Shows ✓ Submission Ready next to "Save to My List" ONLY after:
+   - Step 1 has been run at least once
+   - Step 2 "Apply to draft" has been clicked
+   - Score >= 80
+   This patch does NOT change existing UI/logic; it only toggles visibility of the pill.
+*/
+(function(){
+  const pill = document.getElementById("submissionReadyPill");
+  if(!pill) return;
+
+  const S = window.__lpSubmitState = window.__lpSubmitState || { step1:false, polishApplied:false, score:0 };
+
+  function readScore(){
+    const el = document.getElementById("scoreVal");
+    if(!el) return NaN;
+    const n = parseFloat(String(el.textContent||"").replace(/[^\d.]/g,""));
+    return Number.isFinite(n) ? n : NaN;
+  }
+
+  function update(){
+    const score = readScore();
+    if(Number.isFinite(score)) S.score = score;
+    const ok = !!S.step1 && !!S.polishApplied && Number.isFinite(S.score) && S.score >= 80;
+    pill.classList.toggle("hidden", !ok);
+  }
+
+  // Step 1 completion
+  const btnStep1 = document.getElementById("btnStep1");
+  if(btnStep1){
+    btnStep1.addEventListener("click", ()=>{ S.step1 = true; setTimeout(update, 120); }, true);
+  }
+
+  // Apply-to-draft button in this build is #applyAfter
+  const applyBtn = document.getElementById("applyAfter");
+  if(applyBtn){
+    applyBtn.addEventListener("click", ()=>{ S.polishApplied = true; setTimeout(update, 180); }, true);
+  } else {
+    // fallback: match by button text (case-insensitive)
+    const btns = Array.from(document.querySelectorAll("button"));
+    const b = btns.find(x => (x.textContent||"").trim().toLowerCase() === "apply to draft" || (x.textContent||"").trim().toLowerCase()==="apply to draft");
+    if(b){
+      b.addEventListener("click", ()=>{ S.polishApplied = true; setTimeout(update, 180); }, true);
+    }
+  }
+
+  // Keep in sync as score updates
+  setInterval(update, 700);
+  setTimeout(update, 200);
+})();
+/* ===== End Submission Ready patch ===== */
+
+</script>
+<script>
+
+/* === LP tweak: hide blank Readiness metric and enforce order === */
+(function(){
+  function tidyPolishMetrics(){
+    var ul = document.querySelector('.polish-metrics');
+    if(!ul) return;
+    var items = Array.from(ul.querySelectorAll('li'));
+    var by = {};
+    items.forEach(function(li){
+      var t = (li.textContent||"").trim();
+      var key = t.toLowerCase().split(':')[0];
+      by[key] = li;
+    });
+    // Hide readiness if blank / dashes
+    var r = by['readiness'];
+    if(r){
+      var txt = (r.textContent||"").replace(/\s+/g,' ').trim();
+      if(/readiness:\s*score\s*—\s*→\s*—/i.test(txt) || /readiness:\s*score\s*—/i.test(txt)){
+        r.classList.add('is-hidden');
+      }
+    }
+    // Reorder as: Clarity, Tone, Readability, Readiness (if present)
+    ['clarity','tone','readability','readiness'].forEach(function(k){
+      if(by[k]) ul.appendChild(by[k]);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', tidyPolishMetrics);
+  setTimeout(tidyPolishMetrics, 250);
+  setTimeout(tidyPolishMetrics, 750);
+})();
+
+</script>
+<div class="lpModalOverlay" id="lpEssayPopup">
+<div class="lpModal">
+<div class="lpModalHead">
+<div>
+<div class="lpModalKicker">Essay Studio Results</div>
+<div class="lpModalTitle">Final Polish</div>
+<div class="lpModalSub" id="lpModalSubText">Your polished essay is ready to review below.</div>
+</div>
+<div class="lpModalBtns">
+
+<button class="lpTab" data-lp-tab="polish" disabled="" id="btnStep2Popup" style="pointer-events:none;opacity:0.5;cursor:not-allowed;">Step 2 Polish</button>
+<button class="lpCloseBtn" id="lpAcceptPolishBtn" style="display:none;background:linear-gradient(90deg,#0ea5e9,#22d3ee);border-color:rgba(34,211,238,.45);color:#04111f;">Accept Polish</button>
+<button class="lpCloseBtn" id="lpReadySubmitBtn" style="display:none;border-color:rgba(34,211,238,.28);color:#cffafe;">Ready to Submit</button>
+<button class="lpCloseBtn" id="lpCloseEssayPopup" title="Please Fix your Issues">Close</button>
+</div>
+</div>
+
+<div class="lpView" data-lp-view="polish">
+<div class="lpHeroShell">
+<div class="lpHeroBox">
+<div class="lpHeroKicker">Final Polish</div>
+<h2 class="lpHeroTitle">Your essay is cleaner, stronger, and more admissions-ready.</h2>
+<div class="lpHeroSub">Students care about three things here: did the score improve, does the revised essay feel better, and do they want to keep this version.</div>
+</div>
+<div class="lpScoreHero">
+<div class="lpScoreLabel">Admissions Strength Improved</div>
+<div class="lpScoreRow">
+<div class="lpScoreBefore" id="lpScoreBeforeHero">56</div>
+<div class="lpScoreArrow">→</div>
+<div class="lpScoreAfter" id="lpScoreAfterHero">56</div>
+<span class="lpInlineDelta" id="lpInlineDeltaHero"></span>
+</div>
+<div class="lpScoreChips">
+<div class="lpScoreChip">Clearer opening</div>
+<div class="lpScoreChip">Stronger reflection</div>
+<div class="lpScoreChip">Cleaner flow</div>
+</div>
+</div>
+</div>
+<div class="lpMetricGrid">
+<div class="lpMetric">
+<div class="lpMetricLabel">Writing Quality</div>
+<div class="lpMetricValue" id="lpMetricQuality">— → —</div>
+<div class="lpMetricMeta">Sharper sentence control and better pacing.</div>
+</div>
+<div class="lpMetric">
+<div class="lpMetricLabel">Risk</div>
+<div class="lpMetricValue" id="lpMetricRisk">— → —</div>
+<div class="lpMetricMeta">The draft feels less generic and more developed.</div>
+</div>
+<div class="lpMetric">
+<div class="lpMetricLabel">Benchmark</div>
+<div class="lpMetricValue" id="lpMetricBenchmark">— → —</div>
+<div class="lpMetricMeta">Closer to the range of stronger competitive essays.</div>
+</div>
+</div>
+<div class="lpDiffWrap">
+<div class="lpTextCol">
+<div class="lpTextHead">
+<div class="lpTextTitle">Before — Original Essay</div>
+<span class="lpPolishBadge">Locked baseline</span>
+</div>
+<div class="lpTextBody" id="lpBeforeEssayBody"></div>
+</div>
+<div class="lpTextCol">
+<div class="lpTextHead">
+<div class="lpTextTitle">After — Final Polish</div>
+<span class="lpPolishBadge">Recommended version ✓</span>
+</div>
+<div class="lpTextBody" id="lpAfterEssayBody"></div>
+</div>
+</div>
+<div class="lpPolishActions">
+<button class="lpPolishBtn" id="lpBackPolishBtn" type="button">Back</button>
+<button class="lpPolishBtn primary" id="lpUseVersionBtn" type="button">Use This Version</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+(function(){
+  const popup = document.getElementById('lpEssayPopup');
+  if(!popup) return;
+  const views = popup.querySelectorAll('[data-lp-view]');
+  const tabs = popup.querySelectorAll('[data-lp-tab]');
+  const closeBtn = document.getElementById('lpCloseEssayPopup');
+
+  function openPopup(viewName){
+    popup.classList.add('show');
+    document.body.style.overflow='hidden';
+    setView(viewName || 'review');
+  }
+  function closePopup(){
+    popup.classList.remove('show');
+    document.body.style.overflow='';
+  }
+  const acceptBtn = document.getElementById('lpAcceptPolishBtn');
+  const readyBtn = document.getElementById('lpReadySubmitBtn');
+
+  function setView(name){
+    views.forEach(v => v.classList.toggle('active', v.getAttribute('data-lp-view') === name));
+    tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-lp-tab') === name));
+    const isPolish = name === 'polish';
+    if (acceptBtn) acceptBtn.style.display = isPolish ? '' : 'none';
+    if (readyBtn) readyBtn.style.display = isPolish ? '' : 'none';
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => setView(t.getAttribute('data-lp-tab'))));
+  closeBtn?.addEventListener('click', closePopup);
+  acceptBtn?.addEventListener('click', function(){
+    // Apply polished essay to draft — do NOT close popup
+    var after = window.afterText || (window.lpEssayState && window.lpEssayState.afterPolish) || "";
+    if(after){
+      var ta = document.getElementById('draft');
+      if(ta){ ta.value = after; }
+      var dv = document.getElementById('draftView');
+      if(dv) dv.classList.add('hidden');
+      if(ta) ta.classList.remove('hidden');
+    }
+    if(typeof lpToast === 'function') lpToast('Polished version applied to your draft ✓','ok',3000);
+    // Do not close — let student click Ready to Submit or Close
+  });
+  // readyBtn handler managed by lp-polish-view-sync script below
+  popup.addEventListener('click', (e) => { if(e.target === popup) closePopup(); });
+
+  const step1 = document.getElementById('btnStep1');
+  const step2 = document.getElementById('btnStep2');
+  const ba = document.getElementById('btnBeforeAfter');
+  const ba2 = document.getElementById('openBeforeAfter2');
+
+  step1?.addEventListener('click', function(){ /* Step 1 popup removed intentionally */ });
+  step2?.addEventListener('click', function(){ setTimeout(() => openPopup('polish'), 350); });
+  ba?.addEventListener('click', function(){ setTimeout(() => openPopup('polish'), 150); });
+  ba2?.addEventListener('click', function(){ setTimeout(() => openPopup('polish'), 150); });
+
+  window.openLPEssayPopup = openPopup;
+})();
+</script>
+<script id="lp-hide-student-sees-js">
+document.addEventListener('DOMContentLoaded', function(){
+  const all = Array.from(document.querySelectorAll('*'));
+  const heading = all.find(el => (el.textContent || '').trim() === 'What the student sees');
+  if (heading){
+    const panel = heading.closest('.lpPanel');
+    if (panel) panel.style.display = 'none';
+  }
+  // Normalize any Close button text to exactly "Close"
+  all.forEach(el => {
+    const txt = (el.textContent || '').trim();
+    if (txt === 'Close/button>' || txt === 'Close/button') {
+      el.textContent = 'Close';
+    }
+  });
+});
+</script>
+<script id="lp-hide-coach-questions-js">
+document.addEventListener('DOMContentLoaded', function(){
+  const nodes = Array.from(document.querySelectorAll('*'));
+  const el = nodes.find(n => (n.textContent || '').trim() === 'Coach questions');
+  if(el){
+    const panel = el.closest('.lpPanel');
+    if(panel) panel.style.display = 'none';
+  }
+});
+</script>
+<script id="lp-polish-open-fix">
+document.addEventListener('DOMContentLoaded', function(){
+  const step2 = document.getElementById('btnStep2');
+  const beforeAfter = document.getElementById('btnBeforeAfter');
+  const beforeAfterAlt = document.getElementById('openBeforeAfter2');
+
+  function forcePolishPopup(e){
+    if(!window.__lpStep1Ran){ e.preventDefault(); e.stopPropagation(); return false; }
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if (typeof window.openLPEssayPopup === 'function') {
+      window.openLPEssayPopup('polish');
+    }
+    return false;
+  }
+
+  step2?.addEventListener('click', forcePolishPopup, true);
+  beforeAfter?.addEventListener('click', forcePolishPopup, true);
+  beforeAfterAlt?.addEventListener('click', forcePolishPopup, true);
+});
+</script>
+<script id="lp-remove-legacy-ba-modal">
+document.addEventListener('DOMContentLoaded', function(){
+  const legacyModal = document.getElementById('baModal');
+  if (legacyModal) {
+    legacyModal.remove();
+  }
+
+  function openNewPolishPopup(e){
+    if(!window.__lpStep1Ran){
+      if(e){ e.preventDefault(); e.stopPropagation(); }
+      return false;
+    }
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    }
+
+    try {
+      const draftEl = document.getElementById('draft');
+      if (draftEl && typeof window.beforeText !== 'undefined' && typeof window.afterText !== 'undefined') {
+        const text = (draftEl.value || '').trim();
+        if (text) {
+          window.beforeText = text;
+          if (typeof window.polish === 'function' && typeof window.autoParagraphize === 'function') {
+            window.afterText = window.autoParagraphize(window.polish(text));
+          }
+        }
+      }
+    } catch (err) {}
+
+    if (typeof window.openLPEssayPopup === 'function') {
+      window.openLPEssayPopup('polish');
+    }
+    return false;
+  }
+
+  window.openModal = openNewPolishPopup;
+  window.closeModal = function(){ return false; };
+
+  ['btnStep2','btnBeforeAfter','openBeforeAfter2'].forEach(function(id){
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', openNewPolishPopup, true);
+  });
+});
+</script>
+<div aria-hidden="true" class="evalScaleModal" id="evalScaleModal">
+<div class="evalScaleCard">
+<div class="evalScaleHead">
+<div>
+<div class="evalScaleTitle">How to interpret your scores</div>
+<div class="evalScaleSub">Use these ranges to understand where your essay stands right now.</div>
+</div>
+<button class="lpCloseBtn" id="evalScaleClose" type="button">Close</button>
+</div>
+<div class="evalScaleGrid">
+<div class="lpItem">
+<div class="lpItemTitle">90–100 = Standout</div>
+<div class="lpItemSub">Top-tier, distinctive, and likely memorable to admissions readers.</div>
+</div>
+<div class="lpItem">
+<div class="lpItemTitle">80–89 = Strong</div>
+<div class="lpItemSub">Competitive essay with only minor improvements still needed.</div>
+</div>
+<div class="lpItem">
+<div class="lpItemTitle">70–79 = Solid</div>
+<div class="lpItemSub">Good foundation, but needs sharper insight and differentiation.</div>
+</div>
+<div class="lpItem">
+<div class="lpItemTitle">60–69 = Developing</div>
+<div class="lpItemSub">Shows promise but still lacks distinction.</div>
+</div>
+</div>
+</div>
+</div>
+<script id="lp-eval-scale-script">
+(function(){
+  const modal = document.getElementById('evalScaleModal');
+  const closeBtn = document.getElementById('evalScaleClose');
+  if(!modal) return;
+
+  function openEvalScale(){
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  function closeEvalScale(){
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  document.querySelectorAll('.lpInfoBtn').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      openEvalScale();
+    });
+  });
+
+  if(closeBtn){
+    closeBtn.addEventListener('click', closeEvalScale);
+  }
+
+  modal.addEventListener('click', function(e){
+    if(e.target === modal){
+      closeEvalScale();
+    }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal.classList.contains('show')){
+      closeEvalScale();
+    }
+  });
+})();
+</script>
+<script id="lp-step2-blocker-patch">
+(function(){
+  const BLOCK_MSG = "You need to address the red flags below before proceeding";
+
+  function showBlockMessage(){
+    const existing = document.getElementById('lpStep2BlockToast');
+    if(existing){ existing.remove(); }
+
+    const toast = document.createElement('div');
+    toast.id = 'lpStep2BlockToast';
+    toast.className = 'toast warn show';
+    toast.textContent = BLOCK_MSG;
+    document.body.appendChild(toast);
+
+    setTimeout(() => { toast.classList.add('show'); }, 10);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 220);
+    }, 2600);
+
+    const issuesPanel =
+      document.querySelector('.issueBar') ||
+      document.getElementById('issueList') ||
+      document.querySelector('.coachCard') ||
+      document.querySelector('.issuePills');
+
+    if(issuesPanel){
+      try{
+        issuesPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }catch(e){}
+      issuesPanel.classList.add('pulse');
+      setTimeout(() => issuesPanel.classList.remove('pulse'), 1800);
+    }
+  }
+
+  function bindStep2Block(){
+    const btn = document.getElementById('btnStep2');
+    if(!btn || btn.dataset.step2Blocked === 'true') return;
+
+    btn.dataset.step2Blocked = 'true';
+    btn.setAttribute('aria-disabled', 'true');
+    btn.setAttribute('title', BLOCK_MSG);
+
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      showBlockMessage();
+      return false;
+    }, true);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', bindStep2Block);
+  } else {
+    bindStep2Block();
+  }
+
+  // Re-bind defensively in case other scripts replace the button
+  setTimeout(bindStep2Block, 300);
+  setTimeout(bindStep2Block, 1000);
+})();
+</script>
+<script id="lp-step2-hard-block-script">
+(function(){
+  const BLOCK_MSG = "You need to address the red flags below before proceeding";
+
+  function getCount(id){
+    const el = document.getElementById(id);
+    if(!el) return 0;
+    const n = parseInt((el.textContent || "0").replace(/[^0-9-]/g, ""), 10);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function hasBlockingIssues(){
+    const all = getCount('pillAll');
+    const warn = getCount('pillWarn');
+    const amber = getCount('pillAmber');
+    const minor = getCount('pillMinor');
+    if (all > 0) return true;
+    if ((warn + amber + minor) > 0) return true;
+    return false;
+  }
+
+  function ensureHoverTip(){
+    let tip = document.getElementById('lpStep2HoverTip');
+    if(!tip){
+      tip = document.createElement('div');
+      tip.id = 'lpStep2HoverTip';
+      tip.textContent = BLOCK_MSG;
+      document.body.appendChild(tip);
+    }
+    return tip;
+  }
+
+  function showHoverTip(target){
+    const tip = ensureHoverTip();
+    const r = target.getBoundingClientRect();
+    tip.textContent = BLOCK_MSG;
+    tip.style.left = Math.max(12, r.left + window.scrollX + (r.width / 2) - 170) + 'px';
+    tip.style.top = (r.top + window.scrollY - 52) + 'px';
+    tip.classList.add('show');
+  }
+
+  function hideHoverTip(){
+    const tip = document.getElementById('lpStep2HoverTip');
+    if(tip) tip.classList.remove('show');
+  }
+
+  function removeToast(){
+    const old = document.getElementById('lpStep2BlockToast');
+    if(old) old.remove();
+  }
+
+  function showBlockMessage(){
+    removeToast();
+    const toast = document.createElement('div');
+    toast.id = 'lpStep2BlockToast';
+    toast.style.position = 'fixed';
+    toast.style.top = '22px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.zIndex = '10060';
+    toast.style.padding = '12px 18px';
+    toast.style.borderRadius = '14px';
+    toast.style.border = '1px solid rgba(255,255,255,.16)';
+    toast.style.background = 'linear-gradient(180deg, rgba(34,211,238,.14), rgba(15,23,42,.96))';
+    toast.style.color = '#f8fafc';
+    toast.style.fontWeight = '700';
+    toast.style.boxShadow = '0 20px 50px rgba(0,0,0,.45)';
+    toast.textContent = BLOCK_MSG;
+    document.body.appendChild(toast);
+    setTimeout(function(){
+      if(toast && toast.parentNode) toast.remove();
+    }, 2600);
+  }
+
+  function pulseIssues(){
+    const issuesPanel =
+      document.getElementById('issuePills') ||
+      document.querySelector('.issuePills') ||
+      document.querySelector('.issueBar') ||
+      document.querySelector('.coachCard') ||
+      document.querySelector('[aria-label="LP Coaching Panel"]');
+
+    if(issuesPanel){
+      try{ issuesPanel.scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){}
+      const prev = issuesPanel.style.boxShadow;
+      issuesPanel.style.boxShadow = '0 0 0 2px rgba(239,68,68,.55), 0 0 40px rgba(239,68,68,.18)';
+      setTimeout(function(){ issuesPanel.style.boxShadow = prev; }, 1800);
+    }
+  }
+
+  function ensureBlocker(){
+    let blocker = document.getElementById('lpStep2Blocker');
+    if(!blocker){
+      blocker = document.createElement('div');
+      blocker.id = 'lpStep2Blocker';
+      blocker.setAttribute('title', BLOCK_MSG);
+      blocker.setAttribute('aria-label', BLOCK_MSG);
+      blocker.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        showBlockMessage();
+        pulseIssues();
+        return false;
+      }, true);
+      blocker.addEventListener('mouseenter', function(){
+        blocker.setAttribute('title', BLOCK_MSG);
+        showHoverTip(blocker);
+      });
+      blocker.addEventListener('mousemove', function(){
+        showHoverTip(blocker);
+      });
+      blocker.addEventListener('mouseleave', function(){
+        hideHoverTip();
+      });
+      document.body.appendChild(blocker);
+    }
+    return blocker;
+  }
+
+  function removeBlocker(){
+    const blocker = document.getElementById('lpStep2Blocker');
+    if(blocker) blocker.remove();
+    hideHoverTip();
+  }
+
+  function placeBlocker(){
+    const btn = document.getElementById('btnStep2');
+    const blocker = document.getElementById('lpStep2Blocker');
+    if(!btn || !blocker) return;
+    const r = btn.getBoundingClientRect();
+    blocker.style.left = (r.left + window.scrollX) + 'px';
+    blocker.style.top = (r.top + window.scrollY) + 'px';
+    blocker.style.width = r.width + 'px';
+    blocker.style.height = r.height + 'px';
+  }
+
+  function unlockStep2(){
+    const btn = document.getElementById('btnStep2');
+    if(!btn) return;
+    btn.disabled = false;
+    btn.removeAttribute('aria-disabled');
+    btn.title = "Step 2: Final Polish";
+    btn.classList.remove('lpBlocked');
+    btn.classList.add('lpUnlocked');
+    btn.style.pointerEvents = 'auto';
+    btn.style.userSelect = 'auto';
+    removeBlocker();
+    removeToast();
+  }
+
+  function lockStep2(){
+    const btn = document.getElementById('btnStep2');
+    if(!btn) return;
+    btn.disabled = true;
+    btn.setAttribute('aria-disabled', 'true');
+    btn.title = BLOCK_MSG;
+    btn.classList.remove('lpUnlocked');
+    btn.classList.add('lpBlocked');
+    btn.style.pointerEvents = 'none';
+    btn.style.userSelect = 'none';
+    ensureBlocker();
+    placeBlocker();
+  }
+
+  function syncStep2State(){
+    if(hasBlockingIssues()) lockStep2();
+    else unlockStep2();
+  }
+
+  function watchCounts(){
+    ['pillAll','pillWarn','pillAmber','pillMinor'].forEach(function(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const obs = new MutationObserver(function(){ syncStep2State(); });
+      obs.observe(el, { childList:true, characterData:true, subtree:true });
+    });
+  }
+
+  function init(){
+    syncStep2State();
+    watchCounts();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  window.addEventListener('resize', function(){ if(hasBlockingIssues()) placeBlocker(); });
+  window.addEventListener('scroll', function(){ if(hasBlockingIssues()) placeBlocker(); }, true);
+  setInterval(syncStep2State, 400);
+})();
+</script>
+<style id="lp-ready-home-badge-style">
+#lpHomeReadyBadge{
+  display:none;
+  margin:10px 0 0 0;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(120,255,220,.55);
+  background:rgba(16,40,34,.55);
+  color:rgba(235,255,248,.98);
+  font-weight:800;
+  font-size:13px;
+  width:max-content;
+  box-shadow:0 10px 26px rgba(0,0,0,.22);
+}
+#lpHomeReadyBadge.show{display:inline-flex;align-items:center;gap:8px;}
+#lpHomeReadyBadge .check{
+  width:20px;height:20px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(120,255,220,.18);
+  border:1px solid rgba(120,255,220,.45);
+  font-size:12px;
+}
+</style>
+<script id="lp-home-sync-ready-patch">
+(function(){
+  const READY_KEY = '__lpReadyToSubmit';
+
+  function $(id){ return document.getElementById(id); }
+
+  function getPopupPolishedEssay(){
+    const polishView = document.querySelector('.lpView[data-lp-view="polish"]');
+    if(!polishView) return '';
+    const bodies = polishView.querySelectorAll('.lpTextCol .lpTextBody');
+    const target = bodies && bodies[1] ? bodies[1] : null;
+    return (target?.textContent || '').trim();
+  }
+
+  function showDraftTextarea(){
+    const draft = $('draft');
+    const draftView = $('draftView');
+    if(draftView) draftView.classList.add('hidden');
+    if(draft) draft.classList.remove('hidden');
+  }
+
+  function syncPolishedEssayToHome(){
+    const polished = getPopupPolishedEssay();
+    const draft = $('draft');
+    if(!draft || !polished) return false;
+    draft.value = polished;
+    try{ window.__afterPolishText = polished; }catch(e){}
+    try{
+      window.lpEssayState = window.lpEssayState || {};
+      window.lpEssayState.afterPolish = polished;
+      window.lpState = window.lpState || {};
+      window.lpState.afterPolish = polished;
+      window.lpState.appliedToDraft = true;
+    }catch(e){}
+    try{ window.__appliedToDraft = true; }catch(e){}
+    showDraftTextarea();
+    if(typeof window.updateWordCount === 'function'){
+      try{ window.updateWordCount(); }catch(e){}
+    }
+    return true;
+  }
+
+  function ensureHomeBadge(){
+    let badge = $('lpHomeReadyBadge');
+    if(badge) return badge;
+    const anchor = document.querySelector('.tipRow') || document.querySelector('.toolbar') || document.querySelector('.rightTop');
+    if(!anchor || !anchor.parentNode) return null;
+    badge = document.createElement('div');
+    badge.id = 'lpHomeReadyBadge';
+    badge.innerHTML = '<span class="check">✓</span><span>Ready to Submit</span>';
+    anchor.parentNode.insertBefore(badge, anchor.nextSibling);
+    return badge;
+  }
+
+  function setReadyBadge(show){
+    const badge = ensureHomeBadge();
+    if(badge) badge.classList.toggle('show', !!show);
+    const pill = $('submissionReadyPill');
+    if(pill){
+      pill.textContent = '✓ Ready to Submit';
+      pill.classList.toggle('hidden', !show);
+    }
+    try{ window[READY_KEY] = !!show; }catch(e){}
+  }
+
+  function polishViewOpen(){
+    const popup = $('lpEssayPopup');
+    const polishView = document.querySelector('.lpView[data-lp-view="polish"]');
+    return !!(popup && popup.classList.contains('show') && polishView && polishView.classList.contains('active'));
+  }
+
+  function handleReadySubmit(e){
+    // Just set the badge — don't sync/scroll
+    setReadyBadge(true);
+  }
+
+  function handleAcceptPolish(e){
+    syncPolishedEssayToHome();
+  }
+
+  function handleClosePopup(e){
+    if(polishViewOpen() || window[READY_KEY] === true){
+      syncPolishedEssayToHome();
+      if(window[READY_KEY] === true) setReadyBadge(true);
+    }
+  }
+
+  function init(){
+    if(window[READY_KEY] === true) setReadyBadge(true);
+
+    const readyBtn = $('lpReadySubmitBtn');
+    const acceptBtn = $('lpAcceptPolishBtn');
+    const closeBtn = $('lpCloseEssayPopup');
+
+    if(readyBtn) readyBtn.addEventListener('click', handleReadySubmit, true);
+    if(acceptBtn) acceptBtn.addEventListener('click', handleAcceptPolish, true);
+    if(closeBtn) closeBtn.addEventListener('click', handleClosePopup, true);
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+<script id="lp-popup-essay-source-sync-patch">
+(function(){
+  function $(id){ return document.getElementById(id); }
+
+  function getDraftText(){
+    const draft = $('draft');
+    return draft ? (draft.value || '').trim() : '';
+  }
+
+  function getPolishBodies(){
+    const polishView = document.querySelector('.lpView[data-lp-view="polish"]');
+    if(!polishView) return [];
+    return polishView.querySelectorAll('.lpTextCol .lpTextBody');
+  }
+
+  function resetReadyStateForNewEssay(){
+    try{
+      window.__lpReadyToSubmit = false;
+      window.__appliedToDraft = false;
+      if(window.lpState){
+        window.lpState.appliedToDraft = false;
+        window.lpState.afterPolish = '';
+      }
+      window.__afterPolishText = '';
+    }catch(e){}
+    const pill = $('submissionReadyPill');
+    if(pill) pill.classList.add('hidden');
+    const badge = $('lpHomeReadyBadge');
+    if(badge) badge.classList.remove('show');
+  }
+
+  function setPolishTexts(forceReset){
+    const draftText = getDraftText();
+    const bodies = getPolishBodies();
+    if(!draftText || !bodies || bodies.length < 2) return;
+
+    const sourceChanged = window.__lpPopupSourceEssay !== draftText;
+
+    if(forceReset || sourceChanged){
+      bodies[0].textContent = draftText;
+      bodies[1].textContent = draftText;
+      window.__lpPopupSourceEssay = draftText;
+      resetReadyStateForNewEssay();
+      return;
+    }
+
+    bodies[0].textContent = draftText;
+    const polished = (window.__afterPolishText || (window.lpState && window.lpState.afterPolish) || '').trim();
+    bodies[1].textContent = polished || draftText;
+  }
+
+  function primePopupFromHome(forceReset){
+    setPolishTexts(!!forceReset);
+  }
+
+  function bind(){
+    const step1 = $('btnStep1');
+    const step2 = $('btnStep2');
+    const acceptBtn = $('lpAcceptPolishBtn');
+    const readyBtn = $('lpReadySubmitBtn');
+    const closeBtn = $('lpCloseEssayPopup');
+
+    step1 && step1.addEventListener('click', function(){ primePopupFromHome(false); }, true);
+    step2 && step2.addEventListener('click', function(){ primePopupFromHome(false); }, true);
+
+    acceptBtn && acceptBtn.addEventListener('click', function(){
+      setTimeout(function(){ setPolishTexts(false); }, 0);
+    }, true);
+
+    // readyBtn managed by lp-polish-view-sync
+
+    closeBtn && closeBtn.addEventListener('click', function(){
+      setTimeout(function(){ setPolishTexts(false); }, 0);
+    }, true);
+
+    const draft = $('draft');
+    if(draft){
+      draft.addEventListener('input', function(){
+        const current = (draft.value || '').trim();
+        if(current && current !== window.__lpPopupSourceEssay){
+          setPolishTexts(true);
+        }
+      });
+    }
+
+    // Initial load: make popup use whatever is on the home page, not hardcoded sample text.
+    setTimeout(function(){ setPolishTexts(true); }, 0);
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
+})();
+</script>
+<footer style="border-top:1px solid #3a4b65;padding:24px 28px 28px;margin-top:32px;">
+<div style="max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+<div style="font-size:.8rem;color:#4b5563;"><strong style="color:#9ca3af;">LaunchPath AI</strong> © 2026. All rights reserved.</div>
+<div style="display:flex;gap:20px;">
+<a href="#" style="font-size:.8rem;color:#4b5563;text-decoration:none;">Privacy Policy</a>
+<a href="#" style="font-size:.8rem;color:#4b5563;text-decoration:none;">Terms of Use</a>
+<a href="contact.html" style="font-size:.8rem;color:#4b5563;text-decoration:none;">Contact Us</a>
+</div>
+</div>
+</footer>
+<script id="lp-polish-redesign-merged-js">
+(function(){
+  function syncHeroFromMetrics(){
+    const polish = document.querySelector('.lpView[data-lp-view="polish"]');
+    if(!polish) return;
+    const firstMetric = polish.querySelector('.lpMetric .lpMetricValue');
+    if(!firstMetric) return;
+    const txt = (firstMetric.textContent || '').trim();
+    const m = txt.match(/(\d+)\s*→\s*(\d+)/);
+    if(!m) return;
+    const start = parseInt(m[1],10);
+    const end = parseInt(m[2],10);
+    const beforeEl = document.getElementById('lpScoreBeforeHero');
+    const afterEl = document.getElementById('lpScoreAfterHero');
+    const deltaEl = document.getElementById('lpInlineDeltaHero');
+    if(beforeEl) beforeEl.textContent = String(start);
+    if(!afterEl || !deltaEl) return;
+    let current = start;
+    const totalDelta = end - start;
+    const duration = 850;
+    const steps = 30;
+    const increment = totalDelta / steps;
+    const interval = duration / steps;
+    afterEl.textContent = String(start);
+    deltaEl.textContent = '';
+    if(window.__lpHeroTimer) clearInterval(window.__lpHeroTimer);
+    window.__lpHeroTimer = setInterval(function(){
+      current += increment;
+      if(current >= end){
+        current = end;
+        clearInterval(window.__lpHeroTimer);
+      }
+      const value = Math.round(current);
+      afterEl.textContent = String(value);
+      deltaEl.textContent = '+' + (value - start) + ' point improvement';
+    }, interval);
+  }
+
+  function syncEssayBodies(){
+    const polish = document.querySelector('.lpView[data-lp-view="polish"]');
+    if(!polish) return;
+    const bodies = polish.querySelectorAll('.lpTextBody');
+    if(bodies.length < 2) return;
+    const before = window.beforeText || (window.lpEssayState && window.lpEssayState.baselineBefore) || bodies[0].textContent;
+    const after = window.afterText || (window.lpEssayState && window.lpEssayState.afterPolish) || bodies[1].textContent;
+    bodies[0].textContent = before;
+    bodies[1].textContent = after;
+  }
+
+  function refreshWhenActive(){
+    const popup = document.getElementById('lpEssayPopup');
+    const polishView = document.querySelector('.lpView[data-lp-view="polish"]');
+    if(!popup || !polishView) return;
+    if(popup.classList.contains('show') && polishView.classList.contains('active')){
+      syncEssayBodies();
+      setTimeout(syncHeroFromMetrics, 30);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const popup = document.getElementById('lpEssayPopup');
+    if(popup){
+      const mo = new MutationObserver(function(){ refreshWhenActive(); });
+      mo.observe(popup, {attributes:true, subtree:true, attributeFilter:['class']});
+    }
+
+    const backBtn = document.getElementById('lpBackPolishBtn');
+    if(backBtn){
+      backBtn.addEventListener('click', function(){
+        const closeBtn = document.getElementById('lpCloseEssayPopup') || document.querySelector('.lpCloseBtn');
+        if(closeBtn) closeBtn.click();
+      });
+    }
+
+    const useBtn = document.getElementById('lpUseVersionBtn');
+    const acceptBtn = document.getElementById('lpAcceptPolishBtn');
+    if(useBtn && acceptBtn){
+      useBtn.addEventListener('click', function(){ acceptBtn.click(); });
+    }
+
+    refreshWhenActive();
+  });
+})();
+</script>
+<script id="lp-disable-step1-review-popup">
+(function(){
+  function $(id){ return document.getElementById(id); }
+  const popup = $('lpEssayPopup');
+  const step1 = $('btnStep1');
+  if(!popup || !step1) return;
+
+  function suppressReviewPopup(){
+    const reviewActive = popup.classList.contains('show') &&
+      popup.querySelector('.lpView[data-lp-view="review"]') &&
+      popup.querySelector('.lpView[data-lp-view="review"]').classList.contains('active');
+    if(reviewActive){
+      popup.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Step 1 review popup suppression removed — no flicker
+})();
+</script>
+
+
+<script id="lp-force-polish-only">
+(function(){
+  function forcePolishOnly(){
+    var popup = document.getElementById('lpEssayPopup');
+    if(!popup || !popup.classList.contains('show')) return;
+    var review = popup.querySelector('.lpView[data-lp-view="review"]');
+    var polish = popup.querySelector('.lpView[data-lp-view="polish"]');
+    if(review) review.classList.remove('active');
+    if(polish) polish.classList.add('active');
+    popup.querySelectorAll('.lpTab').forEach(function(tab){
+      var isPolish = tab.getAttribute('data-lp-tab') === 'polish';
+      tab.classList.toggle('active', isPolish);
+    });
+    // Title/subtitle left as-is — not overridden
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('#btnStep1,#btnStep2,#btnStep2Popup,#lpAcceptPolishBtn,#lpReadySubmitBtn');
+    if(t) {
+      setTimeout(forcePolishOnly, 25);
+      setTimeout(forcePolishOnly, 150);
+      setTimeout(forcePolishOnly, 400);
+    }
+  }, true);
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(forcePolishOnly, 0);
+  });
+})();
+</script>
+
+
+<script id="lp-force-before-after-correct">
+(function(){
+  function enforceBeforeAfter(){
+    const beforeEl = document.getElementById('lpBeforeEssayBody');
+    const afterEl = document.getElementById('lpAfterEssayBody');
+
+    // Always use original essay captured at Step 1 time for before panel
+    const before = window.__lpBeforeText || window.lpEssayState?.baselineBefore || window.beforeText;
+    const after = window.lpEssayState?.afterPolish || window.afterText;
+
+    if(beforeEl && before){
+      beforeEl.textContent = before;
+    }
+    if(afterEl && after){
+      afterEl.textContent = after;
+    }
+
+    // HARD GUARD removed — identical before/after is handled by polish() function
+  }
+
+  document.addEventListener('DOMContentLoaded', enforceBeforeAfter);
+
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('#btnStep2,#btnStep2Popup,#lpAcceptPolishBtn');
+    if(trigger){
+      setTimeout(enforceBeforeAfter, 50);
+      setTimeout(enforceBeforeAfter, 200);
+    }
+  }, true);
+})();
+</script>
+
+
+<script id="lp-live-polish-sync">
+(function(){
+  function getRiskLabel(score){
+    if(score >= 80) return "Low";
+    if(score >= 65) return "Med";
+    return "High";
+  }
+  function getBenchmark(score){
+    if(score >= 90) return "90–100";
+    if(score >= 80) return "80–89";
+    if(score >= 70) return "70–79";
+    if(score >= 60) return "60–69";
+    return "50–59";
+  }
+
+  function syncPolishPopup(){
+    var beforeText = window.beforeText || (window.lpEssayState && window.lpEssayState.baselineBefore) || "";
+    var afterText  = window.afterText  || (window.lpEssayState && window.lpEssayState.afterPolish)   || "";
+
+    // Fill before/after essay bodies
+    // Always use the text captured at Step 1 time for before
+    var rawBefore = window.__lpBeforeText || beforeText;
+    var beforeEl = document.getElementById("lpBeforeEssayBody");
+    var afterEl  = document.getElementById("lpAfterEssayBody");
+    if(beforeEl && rawBefore) beforeEl.textContent = rawBefore;
+    if(afterEl  && afterText)  afterEl.textContent  = afterText;
+
+    // Use the score captured at Step 1 time — not re-read from live UI
+    var bScore = window.__lpBeforeScore || 0;
+    if(!bScore){
+      var sv = document.getElementById("scoreVal");
+      if(sv) bScore = parseInt(sv.textContent) || 0;
+    }
+
+    // After score = realistic improvement based on issue count
+    var issueCount = Array.isArray(window.lpAllIssues) ? window.lpAllIssues.length : 0;
+    var delta = Math.max(8, Math.min(17, Math.round(issueCount * 1.4)));
+    var aScore = Math.min(98, bScore + delta);
+
+    // Update score hero
+    var beforeHero = document.getElementById("lpScoreBeforeHero");
+    var afterHero  = document.getElementById("lpScoreAfterHero");
+    var deltaEl    = document.getElementById("lpInlineDeltaHero");
+    if(beforeHero) beforeHero.textContent = String(bScore);
+    if(afterHero)  afterHero.textContent  = String(aScore);
+    if(deltaEl){
+      var d = aScore - bScore;
+      deltaEl.textContent = d > 0 ? "+" + d + " point improvement" : "";
+    }
+
+    // Update metric grid
+    var qEl = document.getElementById("lpMetricQuality");
+    var rEl = document.getElementById("lpMetricRisk");
+    var bEl = document.getElementById("lpMetricBenchmark");
+    if(qEl) qEl.textContent = bScore + " → " + aScore;
+    if(rEl) rEl.textContent = getRiskLabel(bScore) + " → " + getRiskLabel(aScore);
+    if(bEl) bEl.textContent = getBenchmark(bScore) + " → " + getBenchmark(aScore);
+  }
+
+  // Run sync whenever the popup opens
+  var popup = document.getElementById("lpEssayPopup");
+  if(popup){
+    var mo = new MutationObserver(function(){
+      if(popup.classList.contains("show")){
+        setTimeout(syncPolishPopup, 50);
+        setTimeout(syncPolishPopup, 300);
+        // Ensure Accept Polish and Ready to Submit buttons are always visible
+        setTimeout(function(){
+          var ab = document.getElementById("lpAcceptPolishBtn");
+          var rb = document.getElementById("lpReadySubmitBtn");
+          if(ab) ab.style.display = "";
+          if(rb) rb.style.display = "";
+        }, 100);
+      }
+    });
+    mo.observe(popup, {attributes:true, attributeFilter:["class"]});
+  }
+
+  // Also expose computeScore globally so the sync can use it
+  document.addEventListener("DOMContentLoaded", function(){
+    // expose the coach engine's computeScore if not already global
+    if(typeof window.computeScore !== "function"){
+      // minimal fallback scorer
+      window.computeScore = function(text){
+        var words = (text||"").trim().split(/\s+/).filter(Boolean);
+        var score = Math.min(100, Math.max(35, 60 + Math.floor(words.length / 10)));
+        return {total: score};
+      };
+    }
+  });
+
+  window.syncPolishPopup = syncPolishPopup;
+})();
+</script>
+
+<script id="lp-persistent-sentence-highlight">
+(function(){
+  var ACTIVE_CLASS = "mark-selected";
+
+  // Add CSS for persistent highlight
+  var style = document.createElement("style");
+  style.textContent = [
+    "mark.mark-selected {",
+    "  outline: 2px solid rgba(34,211,238,.85) !important;",
+    "  box-shadow: 0 0 0 4px rgba(34,211,238,.18), 0 0 16px rgba(34,211,238,.25) !important;",
+    "  border-radius: 6px !important;",
+    "}"
+  ].join("\n");
+  document.head.appendChild(style);
+
+  function clearSelected(){
+    document.querySelectorAll("mark." + ACTIVE_CLASS).forEach(function(m){
+      m.classList.remove(ACTIVE_CLASS);
+    });
+  }
+
+  // Intercept clicks on issue cards in renderIssueList
+  document.addEventListener("click", function(e){
+    // Check if click is on an issue card (but not the Replace button)
+    var card = e.target.closest(".issueItem");
+    if(!card) return;
+    if(e.target.closest("button")) return; // let Replace button work normally
+
+    var sidx = card.dataset.sidx;
+    if(sidx === undefined || sidx === null) return;
+
+    var mark = document.querySelector('mark[data-sidx="' + sidx + '"]');
+    if(!mark) return;
+
+    // Remove previous selection
+    clearSelected();
+    // Add persistent highlight
+    mark.classList.add(ACTIVE_CLASS);
+    // Scroll into view
+    mark.scrollIntoView({behavior:"smooth", block:"center"});
+  }, true);
+
+  // Clear selection when clicking elsewhere in the essay view
+  document.addEventListener("click", function(e){
+    if(!e.target.closest(".issueItem") && !e.target.closest("mark")){
+      clearSelected();
+    }
+  });
+})();
+</script>
+
+
+<script id="lp-essay-export-and-save">
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+
+  // ── 1. WORD DOC EXPORT ───────────────────────────────────────────
+  function exportToWord(){
+    var text = window.afterText || (window.lpEssayState && window.lpEssayState.afterPolish) || "";
+    if(!text){
+      var el = $("lpAfterEssayBody");
+      if(el) text = el.textContent || "";
+    }
+    if(!text){ alert("Run Step 2: Final Polish first to generate the polished essay."); return; }
+
+    var html = "<!DOCTYPE html><html><head><meta charset='utf-8'><title>My College Essay</title></head><body style='font-family:Arial,sans-serif;font-size:12pt;line-height:1.6;max-width:700px;margin:40px auto;'>";
+    html += "<h2 style='font-size:14pt;margin-bottom:20px;'>My College Essay — LaunchPath AI Final Polish</h2>";
+    text.split(/\n\n+/).forEach(function(para){
+      if(para.trim()) html += "<p>" + para.trim().replace(/\n/g,"<br>") + "</p>";
+    });
+    html += "</body></html>";
+
+    var blob = new Blob([html], {type:"application/msword"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "MyCollegeEssay_LaunchPath.doc";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+    lpToast && lpToast("Essay downloaded as Word doc ✓", "ok", 3000);
+  }
+
+  // Add Word export button to Polish popup actions
+  document.addEventListener("DOMContentLoaded", function(){
+    var actions = document.querySelector(".lpPolishActions");
+    if(actions){
+      var wordBtn = document.createElement("button");
+      wordBtn.className = "lpPolishBtn";
+      wordBtn.id = "lpWordExportBtn";
+      wordBtn.type = "button";
+      wordBtn.innerHTML = "⬇ Download as Word";
+      wordBtn.style.cssText = "border-color:rgba(34,211,238,.35);color:#a5f3fc;";
+      wordBtn.addEventListener("click", exportToWord);
+      // Insert before the "Use This Version" button
+      var useBtn = document.getElementById("lpUseVersionBtn");
+      if(useBtn) actions.insertBefore(wordBtn, useBtn);
+      else actions.appendChild(wordBtn);
+    }
+  });
+
+  // ── 2. SAVE TO MY LIST ──────────────────────────────────────────
+  var SAVED_KEY = "lp_saved_items_v1";
+  function getSaved(){ try{ return JSON.parse(localStorage.getItem(SAVED_KEY)||"[]"); }catch(e){ return []; } }
+  function setSaved(items){ localStorage.setItem(SAVED_KEY, JSON.stringify(items)); }
+
+  function saveEssay(){
+    var text = window.__lpBeforeText || window.beforeText || ($("draft") && $("draft").value) || "";
+    if(!text || text.trim().length < 20){ alert("Write or paste an essay first."); return; }
+    var score = window.__lpBeforeScore || 0;
+    var now = new Date();
+    var savedOn = now.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+    // Derive a subject from first sentence
+    var firstSent = text.trim().split(/[.!?]/)[0].trim();
+    var subject = firstSent.length > 60 ? firstSent.substring(0,57)+"..." : firstSent;
+    var item = {
+      type: "essay",
+      college: "Common App",
+      subject: subject,
+      score: score,
+      savedOn: savedOn,
+      text: text.substring(0, 2000)
+    };
+    var items = getSaved();
+    // Avoid exact duplicate subjects saved same day
+    var exists = items.some(function(x){ return x.type==="essay" && x.subject===item.subject && x.savedOn===item.savedOn; });
+    if(!exists){
+      items.push(item);
+      setSaved(items);
+    }
+    // Show toast
+    if(typeof lpToast === "function") lpToast("Essay saved to My List ✓", "ok", 3000);
+    else { var s=$("btnSave"); if(s){ s.textContent="Saved ✓"; setTimeout(function(){ s.textContent="Save to My List"; },2000); } }
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    var saveBtn = $("btnSave");
+    if(saveBtn) saveBtn.addEventListener("click", saveEssay);
+  });
+
+  // ── 3. READY TO SUBMIT — fix competing handlers ──────────────────
+  document.addEventListener("DOMContentLoaded", function(){
+    var readyBtn = $("lpReadySubmitBtn");
+    if(!readyBtn) return;
+
+    // Remove all existing listeners by cloning
+    var fresh = readyBtn.cloneNode(true);
+    readyBtn.parentNode.replaceChild(fresh, readyBtn);
+
+    fresh.addEventListener("click", function(){
+      // 1. Sync polished essay to draft
+      var after = window.afterText || (window.lpEssayState && window.lpEssayState.afterPolish) || "";
+      if(after){
+        var ta = $("draft");
+        if(ta){ ta.value = after; }
+        var dv = $("draftView");
+        if(dv) dv.classList.add("hidden");
+        if(ta) ta.classList.remove("hidden");
+      }
+      // 2. Show ✓ Submission Ready badge next to Save button
+      var pill = $("submissionReadyPill");
+      if(pill){ pill.textContent = "✓ Submission Ready"; pill.classList.remove("hidden"); }
+      // 3. Do NOT close popup — let student click Close themselves
+      // 4. Save to list automatically
+      saveEssay();
+      // 5. Toast
+      if(typeof lpToast === "function") lpToast("Essay marked as Submission Ready ✓", "ok", 3500);
+    }, true);
+  });
+
+  window.exportEssayToWord = exportToWord;
+})();
+</script>
+
+</body>
+</html>

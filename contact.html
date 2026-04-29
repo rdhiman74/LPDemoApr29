@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>LaunchPath AI — Contact Us</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#020617; --bg2:#0b1120;
+      --border:#1f2937; --border-strong:#334155;
+      --text:#e5e7eb; --muted:#94a3b8;
+      --accent:#38bdf8; --accent2:#0ea5e9;
+      --green:#22c55e; --purple:#a78bfa;
+      --radius:20px; --shadow:0 18px 40px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100vh;}
+    body{
+      font-family:Inter,system-ui,-apple-system,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left,rgba(56,189,248,.16),transparent 28%),
+        radial-gradient(circle at top right,rgba(167,139,250,.12),transparent 22%),
+        radial-gradient(circle at 50% 120%,rgba(34,211,238,.10),transparent 35%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+      background-attachment:fixed;
+    }
+    a{text-decoration:none;color:inherit}
+    .wrap{max-width:1280px;margin:0 auto;padding:20px 22px 60px}
+
+    /* NAV */
+    .header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 20px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:36px;}
+    .brand{display:flex;gap:12px;align-items:center}
+    .orb{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#bfdbfe 0,transparent 35%),radial-gradient(circle at 70% 75%,#38bdf8 0,transparent 40%),#0f172a;border:1px solid rgba(148,163,184,.45);box-shadow:0 0 22px rgba(56,189,248,.32);}
+    .brand h1{font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:0;font-weight:700;}
+    .brand p{font-size:11px;color:var(--muted);margin:2px 0 0}
+    .nav{display:flex;gap:10px;flex-wrap:wrap}
+    .nav a{padding:9px 16px;border-radius:999px;border:1px solid rgba(56,189,248,.28);background:rgba(15,23,42,.55);color:#dbeafe;font-size:12px;transition:border-color .15s;}
+    .nav a:hover{border-color:rgba(56,189,248,.6);}
+    .nav a.cta{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#082f49;border-color:rgba(56,189,248,.7);font-weight:700;}
+
+    /* SHARED */
+    .card{background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(11,18,32,.96));border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#cbd5e1;background:rgba(8,47,73,.40);border:1px solid rgba(56,189,248,.28);padding:6px 12px;border-radius:999px;margin-bottom:16px;}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border-strong);background:#0f172a;color:var(--text);transition:filter .15s;font-family:inherit;}
+    .btn:hover{filter:brightness(1.08);}
+    .btn.primary{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#082f49;border-color:rgba(56,189,248,.7);}
+    .btn.large{padding:14px 30px;font-size:14px;}
+
+    /* PAGE HERO */
+    .page-hero{text-align:center;margin-bottom:40px;padding:0 20px;}
+    .page-hero h2{font-size:40px;font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-bottom:14px;}
+    .page-hero h2 span{color:var(--accent);}
+    .page-hero p{font-size:14px;color:#cbd5e1;line-height:1.75;max-width:560px;margin:0 auto 20px;}
+    .email-chip{display:inline-flex;align-items:center;gap:10px;padding:10px 20px;border-radius:999px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.28);font-size:13px;color:#a5f3fc;}
+    .email-chip a{color:#38bdf8;font-weight:700;}
+
+    /* TYPE SELECTOR */
+    .type-selector{display:flex;gap:10px;justify-content:center;margin-bottom:36px;flex-wrap:wrap;}
+    .type-btn{padding:12px 24px;border-radius:999px;border:1px solid var(--border-strong);background:rgba(15,23,42,.6);color:#94a3b8;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;}
+    .type-btn:hover{border-color:rgba(56,189,248,.5);color:#dbeafe;}
+    .type-btn.active{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#082f49;border-color:rgba(56,189,248,.7);}
+    .type-btn .type-icon{margin-right:8px;}
+
+    /* MAIN LAYOUT */
+    .contact-grid{display:grid;grid-template-columns:1fr;gap:20px;align-items:start;max-width:720px;margin:0 auto;}
+
+    /* INFO PANEL */
+    .info-panel{display:none;}
+    .info-panel h3{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;}
+    .info-panel .info-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:24px;}
+    .info-points{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+    .ip{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:rgba(15,23,42,.72);border:1px solid #1f2937;}
+    .ip-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+    .ip-text strong{display:block;font-size:12px;color:#f3f4f6;margin-bottom:3px;}
+    .ip-text span{font-size:11px;color:var(--muted);line-height:1.55;}
+    .contact-direct{padding:16px 18px;border-radius:14px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.22);}
+    .contact-direct .cd-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;}
+    .contact-direct a{font-size:16px;font-weight:700;color:#38bdf8;}
+    .contact-direct .cd-note{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;}
+
+    /* FORM PANEL */
+    .form-panel{padding:32px;}
+    .form-panel h3{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;}
+    .form-panel .form-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:24px;}
+    .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .field{display:flex;flex-direction:column;gap:6px;}
+    .field.full{grid-column:1/-1;}
+    label{font-size:12px;color:#cbd5e1;font-weight:600;}
+    input,select,textarea{width:100%;padding:11px 14px;border-radius:12px;border:1px solid #334155;background:#0f172a;color:var(--text);font-size:12px;outline:none;font-family:inherit;transition:border-color .15s;}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(56,189,248,.12);}
+    select option{background:#0f172a;}
+    textarea{min-height:110px;resize:vertical;}
+    .form-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap;}
+    .tiny{font-size:11px;color:var(--muted);line-height:1.55;max-width:340px;}
+
+    /* Dynamic field sections */
+    .field-section{display:none;}
+    .field-section.visible{display:contents;}
+
+    /* SUCCESS STATE */
+    .success-state{display:none;text-align:center;padding:40px 20px;}
+    .success-state.visible{display:block;}
+    .success-icon{font-size:48px;margin-bottom:16px;}
+    .success-state h4{font-size:22px;font-weight:700;margin-bottom:8px;}
+    .success-state p{font-size:13px;color:var(--muted);line-height:1.65;}
+
+    /* FOOTER */
+    .footer{border-top:1px solid rgba(255,255,255,.06);padding-top:20px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:40px;}
+
+    @media(max-width:900px){
+      .contact-grid{grid-template-columns:1fr;}
+      .fields{grid-template-columns:1fr;}
+      .field.full{grid-column:1;}
+      .page-hero h2{font-size:28px;}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- NAV -->
+  <header class="header">
+    <div class="brand">
+      <div class="orb"></div>
+      <div>
+        <h1>LaunchPath AI</h1>
+        <p>Contact Us</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="index.html">← Home</a>
+      <a href="student-workplace.html">Student Portal</a>
+      <a href="partner.html">Partner</a>
+      <a href="#form" class="cta">Send Message →</a>
+    </nav>
+  </header>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="eyebrow">✦ We'd love to hear from you</div>
+    <h2>How can we <span>help you?</span></h2>
+    <p>Whether you're a student navigating college apps, a parent supporting your family's journey, or a prep center exploring a partnership — we're here.</p>
+    <div class="email-chip">📬 Direct email: <a href="mailto:Info@launchpathai.com">Info@launchpathai.com</a></div>
+  </div>
+
+  <!-- TYPE SELECTOR -->
+  <div class="type-selector">
+    <button class="type-btn active" onclick="setType('student')" id="btn-student">
+      <span class="type-icon">🎓</span>Student
+    </button>
+    <button class="type-btn" onclick="setType('family')" id="btn-family">
+      <span class="type-icon">👨‍👩‍👧</span>Parent / Family
+    </button>
+    <button class="type-btn" onclick="setType('partner')" id="btn-partner">
+      <span class="type-icon">🤝</span>SAT Prep Center
+    </button>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="contact-grid">
+
+    <!-- INFO PANEL — changes by type -->
+    <div class="card info-panel" id="info-panel">
+
+      <!-- STUDENT INFO -->
+      <div class="field-section visible" id="info-student">
+        <h3>We're here for your journey.</h3>
+        <p class="info-sub">Questions about your account, tools, or how LaunchPath works? We respond within one business day.</p>
+        <div class="info-points">
+          <div class="ip"><div class="ip-icon">🎯</div><div class="ip-text"><strong>College matching questions</strong><span>Not sure how your scattergram results work or what your fit score means? We'll walk you through it.</span></div></div>
+          <div class="ip"><div class="ip-icon">✍️</div><div class="ip-text"><strong>Essay studio support</strong><span>Need help getting started or understanding your feedback? Our team can guide you.</span></div></div>
+          <div class="ip"><div class="ip-icon">📊</div><div class="ip-text"><strong>Account or technical issues</strong><span>Problems logging in, saving your work, or accessing a tool? We'll fix it fast.</span></div></div>
+          <div class="ip"><div class="ip-icon">💰</div><div class="ip-text"><strong>Billing and subscription</strong><span>Questions about your plan, billing cycle, or cancellation — just ask.</span></div></div>
+        </div>
+        <div class="contact-direct">
+          <div class="cd-label">Direct email</div>
+          <a href="mailto:Info@launchpathai.com">Info@launchpathai.com</a>
+          <div class="cd-note">We respond within one business day. No bots — a real person reads every message.</div>
+        </div>
+      </div>
+
+      <!-- FAMILY INFO -->
+      <div class="field-section" id="info-family">
+        <h3>Supporting your student starts here.</h3>
+        <p class="info-sub">Questions about how LaunchPath works for your family, pricing, or how to get your student started.</p>
+        <div class="info-points">
+          <div class="ip"><div class="ip-icon">👀</div><div class="ip-text"><strong>How it works for families</strong><span>LaunchPath is student-led but parent-informed. We can walk you through what your student sees and what you'll learn from their progress.</span></div></div>
+          <div class="ip"><div class="ip-icon">💳</div><div class="ip-text"><strong>Pricing and plans</strong><span>Questions about what's included, how billing works, or whether there's a family plan? We'll explain everything clearly.</span></div></div>
+          <div class="ip"><div class="ip-icon">🏫</div><div class="ip-text"><strong>Prep center integration</strong><span>Is your student enrolled at an SAT prep center? Ask us about our partner program and how it works alongside your existing investment.</span></div></div>
+          <div class="ip"><div class="ip-icon">🔒</div><div class="ip-text"><strong>Privacy and data</strong><span>Questions about how we handle your student's data, privacy policy, or FERPA compliance.</span></div></div>
+        </div>
+        <div class="contact-direct">
+          <div class="cd-label">Direct email</div>
+          <a href="mailto:Info@launchpathai.com">Info@launchpathai.com</a>
+          <div class="cd-note">We respond within one business day. Every family inquiry is handled with care.</div>
+        </div>
+      </div>
+
+      <!-- PARTNER INFO -->
+      <div class="field-section" id="info-partner">
+        <h3>Let's talk about a partnership.</h3>
+        <p class="info-sub">No pressure, no group webinars. A direct 20-minute conversation with someone who knows the product and the business model inside out.</p>
+        <div class="info-points">
+          <div class="ip"><div class="ip-icon">📈</div><div class="ip-text"><strong>Revenue share model</strong><span>We walk through exact numbers, split percentages, and payout structure. No vagueness.</span></div></div>
+          <div class="ip"><div class="ip-icon">🖥️</div><div class="ip-text"><strong>Partner dashboard demo</strong><span>See your live traffic-light command center — engagement, progress, and risk across your full student roster.</span></div></div>
+
+        </div>
+        <div class="contact-direct">
+          <div class="cd-label">Partnership inquiries</div>
+          <a href="mailto:Info@launchpathai.com">Info@launchpathai.com</a>
+          <div class="cd-note">This goes directly to our partnerships team — separate from the student-facing queue. We respond same business day.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FORM PANEL -->
+    <div class="card form-panel" id="form">
+      <div id="form-content">
+        <h3 id="form-title">Get in touch</h3>
+        <p class="form-sub" id="form-sub">Tell us what's on your mind — we'll get back to you within one business day.</p>
+
+        <div class="fields">
+          <!-- SHARED FIELDS -->
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" id="f-first" placeholder="Your first name"/>
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" id="f-last" placeholder="Your last name"/>
+          </div>
+          <div class="field full">
+            <label>Email Address</label>
+            <input type="email" id="f-email" placeholder="your@email.com"/>
+          </div>
+
+          <!-- STUDENT FIELDS -->
+          <div class="field-section visible full" id="fields-student">
+            <div class="fields" style="display:contents;">
+              <div class="field">
+                <label>Graduation Year</label>
+                <select id="f-grad">
+                  <option value="">Select year</option>
+                  <option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Topic</label>
+                <select id="f-topic-student">
+                  <option value="">Select topic</option>
+                  <option>College Matching</option>
+                  <option>Essay Studio</option>
+                  <option>Financial Fit / ROI</option>
+                  <option>Account / Login</option>
+                  <option>Billing</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAMILY FIELDS -->
+          <div class="field-section full" id="fields-family">
+            <div class="fields" style="display:contents;">
+              <div class="field">
+                <label>Student's Graduation Year</label>
+                <select id="f-grad-family">
+                  <option value="">Select year</option>
+                  <option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Topic</label>
+                <select id="f-topic-family">
+                  <option value="">Select topic</option>
+                  <option>How LaunchPath Works</option>
+                  <option>Pricing & Plans</option>
+                  <option>Prep Center Integration</option>
+                  <option>Privacy & Data</option>
+                  <option>Billing</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- PARTNER FIELDS -->
+          <div class="field-section full" id="fields-partner">
+            <div class="fields" style="display:contents;">
+              <div class="field">
+                <label>Center Name</label>
+                <input type="text" id="f-center" placeholder="Your prep center name"/>
+              </div>
+              <div class="field">
+                <label>Location</label>
+                <input type="text" id="f-location" placeholder="City, State"/>
+              </div>
+              <div class="field">
+                <label>Active Students</label>
+                <select id="f-students">
+                  <option value="">Select range</option>
+                  <option>1–50</option><option>51–150</option><option>151–300</option><option>300+</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>I'm most interested in</label>
+                <select id="f-interest">
+                  <option value="">Select topic</option>
+                  <option>Revenue Share Model</option>
+                  <option>Student Platform Demo</option>
+                  <option>Partner Dashboard</option>
+                  <option>Full Partnership Overview</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- MESSAGE — always shown -->
+          <div class="field full">
+            <label id="msg-label">Message</label>
+            <textarea id="f-message" placeholder="Tell us what you need..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-foot">
+          <div class="tiny" id="form-note"></div>
+          <button class="btn primary large" onclick="submitForm()">Send Message →</button>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-state" id="success-state">
+        <div class="success-icon">✅</div>
+        <h4>Message sent!</h4>
+        <p>Thanks for reaching out. We'll get back to you at your email address within one business day.<br/><br/>
+        In the meantime feel free to email us directly at <a href="mailto:Info@launchpathai.com" style="color:var(--accent);">Info@launchpathai.com</a></p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>© 2026 LaunchPath AI. All rights reserved.</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <a href="mailto:Info@launchpathai.com" style="color:var(--accent);">Info@launchpathai.com</a>
+      <a href="index.html" style="color:var(--muted);">Student site →</a>
+      <a href="partner.html" style="color:var(--muted);">Partner program →</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var currentType = 'student';
+
+  var infoMap = {
+    student: { title:'Get in touch', sub:'Tell us what\'s on your mind — we\'ll get back to you within one business day.', note:'' },
+    family:  { title:'Ask us anything', sub:'Questions about your student\'s journey or how LaunchPath fits into your family\'s plan.', note:'' },
+    partner: { title:'Request a private demo', sub:'Tell us about your center and what you\'d most like to see. We\'ll set up a 20-minute walkthrough.', note:'' }
+  };
+
+  function setType(type) {
+    currentType = type;
+
+    // Update buttons
+    ['student','family','partner'].forEach(function(t) {
+      document.getElementById('btn-'+t).classList.toggle('active', t===type);
+    });
+
+    // Update info panel
+    ['info-student','info-family','info-partner'].forEach(function(id) {
+      var el = document.getElementById(id);
+      el.classList.toggle('visible', id === 'info-'+type);
+    });
+
+    // Update form fields
+    ['fields-student','fields-family','fields-partner'].forEach(function(id) {
+      var el = document.getElementById(id);
+      el.classList.toggle('visible', id === 'fields-'+type);
+    });
+
+    // Update form copy
+    var m = infoMap[type];
+    document.getElementById('form-title').textContent = m.title;
+    document.getElementById('form-sub').textContent = m.sub;
+    document.getElementById('form-note').textContent = m.note;
+
+    // Update message placeholder
+    var placeholders = {
+      student: 'Tell us what you need — which tool, what issue, or what question you have...',
+      family:  'Tell us about your student and what questions you have about LaunchPath...',
+      partner: 'Tell us about your center, your student volume, and what you\'d most like to see in the demo...'
+    };
+    document.getElementById('f-message').placeholder = placeholders[type];
+  }
+
+  function submitForm() {
+    var first = document.getElementById('f-first').value.trim();
+    var email = document.getElementById('f-email').value.trim();
+    if (!first || !email) {
+      alert('Please enter your name and email address.');
+      return;
+    }
+    document.getElementById('form-content').style.display = 'none';
+    document.getElementById('success-state').classList.add('visible');
+  }
+</script>
+
+</body>
+</html>
